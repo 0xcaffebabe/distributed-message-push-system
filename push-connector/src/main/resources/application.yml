@@ -6,4 +6,6 @@ spring:
       discovery:
         server-addr: local:8848
   application:
-    name: cart-service
+    name: connector-service
+server:
+  port: 50001
