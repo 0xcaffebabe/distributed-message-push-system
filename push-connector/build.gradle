@@ -18,6 +18,7 @@ dependencies {
 	compile project(':push-common')
 	implementation 'org.springframework.boot:spring-boot-starter'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	annotationProcessor 'org.projectlombok:lombok:1.18.12'
 	compileOnly 'org.projectlombok:lombok:1.18.12'
 	compile group: 'com.alibaba.cloud', name: 'spring-cloud-starter-alibaba-nacos-discovery', version: '2.2.1.RELEASE'

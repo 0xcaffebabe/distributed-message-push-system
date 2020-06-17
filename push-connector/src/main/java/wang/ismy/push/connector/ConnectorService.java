@@ -9,6 +9,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,9 @@ public class ConnectorService {
 
     @Value("${connector.port}")
     private int port;
+
+    @Autowired
+    private ConnectorHandler connectorHandler;
 
     @PostConstruct
     public void init(){
@@ -53,7 +57,7 @@ public class ConnectorService {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         public void initChannel(SocketChannel ch) throws Exception {
-                            ch.pipeline().addLast(new ConnectorHandler());
+                            ch.pipeline().addLast(connectorHandler);
                         }
                     })
                     // 指定一些参数（针对到来的连接）
