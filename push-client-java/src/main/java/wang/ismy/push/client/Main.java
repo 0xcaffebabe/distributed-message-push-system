@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 /**
  * @author MY
@@ -12,8 +16,13 @@ import java.net.Socket;
  */
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
+        String connector = getConnector();
+        String[] t = connector.split(":");
+        String host = t[0];
+        int port = Integer.parseInt(t[1]);
         String userId = "9527";
-        Socket socket = new Socket("localhost",40001);
+        System.out.println("连接"+connector);
+        Socket socket = new Socket(host,port);
         PrintWriter pw = new PrintWriter(socket.getOutputStream());
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         new Thread(()->{
@@ -29,9 +38,9 @@ public class Main {
         }).start();
         new Thread(()->{
             while (true){
-                String s = null;
+
                 try {
-                    s = br.readLine();
+                    String s = br.readLine();
                     System.out.println("接收到服务消息:"+s);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -39,5 +48,12 @@ public class Main {
 
             }
         }).start();
+    }
+
+    private static String getConnector() throws IOException, InterruptedException {
+        HttpClient client = HttpClient.newBuilder().build();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:30001/")).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        return response.body();
     }
 }

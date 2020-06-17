@@ -1,6 +1,7 @@
 package wang.ismy.push.connector;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 @Slf4j
 @Component
 @AllArgsConstructor
+@ChannelHandler.Sharable
 public class ConnectorHandler extends ChannelInboundHandlerAdapter {
     private final ClientService clientService;
     private final MessageService messageService;
