@@ -1,0 +1,15 @@
+server:
+  port: 1666
+spring:
+  rabbitmq:
+    addresses: local
+    username: message
+    password: message
+    virtual-host: /
+    port: 5672
+    listener:
+      simple:
+        acknowledge-mode: manual
+        retry:
+          enabled: true
+          max-attempts: 10
