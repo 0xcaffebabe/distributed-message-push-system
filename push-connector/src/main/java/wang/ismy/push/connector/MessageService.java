@@ -7,6 +7,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.EventLoop;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -59,12 +60,14 @@ public class MessageService {
         }
     }
 
-//    @RabbitListener(bindings = @QueueBinding(
-//            value = @Queue(value = "message-queue"),
-//            exchange = @Exchange(name = "message",type = "fanout")
-//    ))
-//    @RabbitHandler
     public void onMessage(wang.ismy.push.common.entity.Message payload) throws IOException {
-        log.info("接收到消息队列消息:{}",payload);
+        // 发送对象为空，代表是一条广播消息
+        log.info("get message:{}",payload);
+        if (StringUtils.isEmpty(payload.getTo())){
+            // TODO
+        }else {
+            clientService.sendMessage(payload.getTo(),new String(payload.getPayload()));
+            log.info("已向{}投递消息{}",payload.getTo(),new String(payload.getPayload()));
+        }
     }
 }

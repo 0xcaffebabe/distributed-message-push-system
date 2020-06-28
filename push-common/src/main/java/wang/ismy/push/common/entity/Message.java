@@ -11,5 +11,5 @@ import java.io.Serializable;
 @Data
 public class Message implements Serializable {
     private byte[] payload;
-    private Integer to;
+    private String to;
 }

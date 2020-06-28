@@ -18,7 +18,7 @@ public class Api {
     private RabbitTemplate rabbitTemplate;
 
     @RequestMapping("message")
-    public String sendMessage(String msg,Integer target){
+    public String sendMessage(String msg,String target){
         Message message = new Message();
         message.setPayload(msg.getBytes());
         message.setTo(target);

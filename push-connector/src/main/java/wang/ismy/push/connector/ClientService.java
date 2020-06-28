@@ -67,7 +67,7 @@ public class ClientService {
         redisService.set(userId,"k");
 
         // 发送一条消息给客户端
-        sendMessage(userId, LocalDateTime.now().toString()+"\n");
+        sendMessage(userId, LocalDateTime.now().toString());
 
         log.info("{},{}刷新存活时间",channel,userId);
         log.info(channelMap.toString());
@@ -80,6 +80,7 @@ public class ClientService {
     }
 
     public void sendMessage(String userId,String message){
+        message = message+"\n";
         Channel channel = channelMap.get(userId);
         if (channel == null){
             log.info("获取channel失败:{}",userId);
