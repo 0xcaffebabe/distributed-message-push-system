@@ -25,6 +25,7 @@ public class Main {
         Socket socket = new Socket(host,port);
         PrintWriter pw = new PrintWriter(socket.getOutputStream());
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        // 启动一条线程向connector发送心跳
         new Thread(()->{
             while (true){
                 pw.print("heartbeat-"+userId);
@@ -36,6 +37,7 @@ public class Main {
                 }
             }
         }).start();
+        // 这条线程用来接收服务端的消息
         new Thread(()->{
             while (true){
 
@@ -43,7 +45,9 @@ public class Main {
                     String s = br.readLine();
                     System.out.println("接收到服务消息:"+s);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    // 发送异常退出程序
+                    System.err.println("连接发生异常:"+e);
+                    System.exit(-1);
                 }
 
             }
