@@ -10,6 +10,16 @@ on:
     branches: [ master ]
 
 jobs:
+  push-common-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 14
+        uses: actions/setup-java@v1
+        with:
+          java-version: 14
+      - name: Build with Gradle
+        run: gradle :push-common:build
   push-admin-build:
     runs-on: ubuntu-latest
     steps:
@@ -20,3 +30,33 @@ jobs:
         java-version: 14
     - name: Build with Gradle
       run: gradle :push-admin:build
+  push-connector-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 14
+        uses: actions/setup-java@v1
+        with:
+          java-version: 14
+      - name: Build with Gradle
+        run: gradle :push-connector:build
+  push-lookup-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 14
+        uses: actions/setup-java@v1
+        with:
+          java-version: 14
+      - name: Build with Gradle
+        run: gradle :push-lookup:build
+  push-client-java-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up JDK 14
+        uses: actions/setup-java@v1
+        with:
+          java-version: 14
+      - name: Build with Gradle
+        run: gradle :push-client-java:build

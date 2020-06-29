@@ -1,2 +1,5 @@
 include 'push-admin'
 include 'push-common'
+include 'push-connector'
+include 'push-client-java'
+include 'push-lookup'
