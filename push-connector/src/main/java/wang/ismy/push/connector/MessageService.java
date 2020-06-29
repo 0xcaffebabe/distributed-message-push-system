@@ -64,7 +64,8 @@ public class MessageService {
         // 发送对象为空，代表是一条广播消息
         log.info("get message:{}",payload);
         if (StringUtils.isEmpty(payload.getTo())){
-            // TODO
+            clientService.broadcast(new String(payload.getPayload()));
+            log.info("广播消息已发起");
         }else {
             clientService.sendMessage(payload.getTo(),new String(payload.getPayload()));
             log.info("已向{}投递消息{}",payload.getTo(),new String(payload.getPayload()));

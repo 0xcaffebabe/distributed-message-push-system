@@ -4,10 +4,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import wang.ismy.push.common.entity.Message;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -29,6 +31,9 @@ public class ClientService {
     private Map<Channel,String> channelReverseMap = new ConcurrentHashMap<>(256);
 
     private final RedisService redisService;
+
+    @Autowired
+    private ThreadPoolService threadPoolService;
 
     public ClientService(RedisService redisService) {
         this.redisService = redisService;
@@ -94,8 +99,16 @@ public class ClientService {
         channel.flush();
     }
 
-    public void broadcast(Message message){
-
+    public void broadcast(String message){
+        Collection<Channel> channels = channelMap.values();
+        for (Channel channel : channels) {
+            String finalMessage = message+"\n";
+            threadPoolService.submit(()->{
+                channel.write(Unpooled.wrappedBuffer(finalMessage.getBytes()));
+                channel.flush();
+                log.info("向{}广播消息:{}",channel,message);
+            });
+        }
     }
 
 

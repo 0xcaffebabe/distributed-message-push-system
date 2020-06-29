@@ -20,7 +20,7 @@ public class Main {
         String[] t = connector.split(":");
         String host = t[0];
         int port = Integer.parseInt(t[1]);
-        String userId = "9527";
+        String userId = "9528";
         System.out.println("连接"+connector);
         Socket socket = new Socket(host,port);
         PrintWriter pw = new PrintWriter(socket.getOutputStream());
