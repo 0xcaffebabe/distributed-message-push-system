@@ -16,7 +16,10 @@ import java.net.http.HttpResponse;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        Client client = new Client();
+        Client client = new Client("9527");
+        client.setMessageHandler(s->{
+            System.out.println("接收到服务端消息:"+s);
+        });
         client.connect();
     }
 }

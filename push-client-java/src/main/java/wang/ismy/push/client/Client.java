@@ -15,12 +15,29 @@ import java.net.http.HttpResponse;
  * @date 2020/6/30 14:54
  */
 public class Client {
+
+    public void setMessageHandler(MessageHandler messageHandler) {
+        this.messageHandler = messageHandler;
+    }
+
+    private MessageHandler messageHandler;
+    private final String userId;
+
+    public Client(String userId) {
+        this.userId = userId;
+    }
+
     public void connect() throws Exception{
-        String connector = getConnector();
+        String connector;
+        try {
+             connector = getConnector();
+        } catch (Exception e){
+            System.out.println("获取connector发生异常:"+e);
+            return;
+        }
         String[] t = connector.split(":");
         String host = t[0];
         int port = Integer.parseInt(t[1]);
-        String userId = "9528";
         System.out.println("连接"+connector);
         Socket socket = new Socket(host,port);
         PrintWriter pw = new PrintWriter(socket.getOutputStream());
@@ -43,7 +60,9 @@ public class Client {
 
                 try {
                     String s = br.readLine();
-                    System.out.println("接收到服务消息:"+s);
+                    if (messageHandler != null) {
+                        messageHandler.handle(s);
+                    }
                 } catch (IOException e) {
                     // 发生异常重新连接
                     System.err.println("连接发生异常:"+e);
