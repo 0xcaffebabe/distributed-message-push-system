@@ -1,5 +1,6 @@
 package wang.ismy.push.pushadmin;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,14 +16,11 @@ import wang.ismy.push.common.entity.Message;
 @AllArgsConstructor
 public class Api {
 
-    private RabbitTemplate rabbitTemplate;
+    private MessageService messageService;
 
     @RequestMapping("message")
-    public String sendMessage(String msg,String target){
-        Message message = new Message();
-        message.setPayload(msg.getBytes());
-        message.setTo(target);
-        rabbitTemplate.convertAndSend("message",null,message);
+    public String sendMessage(String msg,String target) throws JsonProcessingException {
+        messageService.sendTextMessage(target,msg);
         return msg;
     }
 }
