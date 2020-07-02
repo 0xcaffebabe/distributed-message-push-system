@@ -13,3 +13,4 @@ spring:
         retry:
           enabled: true
           max-attempts: 10
+    publisher-confirm-type: correlated

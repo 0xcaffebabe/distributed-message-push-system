@@ -19,8 +19,12 @@ public class Api {
     private MessageService messageService;
 
     @RequestMapping("message")
-    public String sendMessage(String msg,String target) throws JsonProcessingException {
-        messageService.sendTextMessage(target,msg);
-        return msg;
+    public String sendMessage(String msg,String target) throws JsonProcessingException, InterruptedException {
+        var result = messageService.sendTextMessage(target,msg);
+        if (!result.ack){
+            return "消息"+result.correlationData.getId()+"投递失败:"+result.cause;
+        }else {
+            return "消息"+result.correlationData.getId()+"投递成功";
+        }
     }
 }
