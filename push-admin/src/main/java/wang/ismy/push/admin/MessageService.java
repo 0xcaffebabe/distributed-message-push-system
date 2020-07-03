@@ -1,8 +1,7 @@
-package wang.ismy.push.pushadmin;
+package wang.ismy.push.admin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -22,9 +21,11 @@ import java.util.UUID;
 public class MessageService {
 
     private RabbitTemplate rabbitTemplate;
+    private MessageDAO messageDAO;
 
-    public MessageService(RabbitTemplate rabbitTemplate) {
+    public MessageService(RabbitTemplate rabbitTemplate,MessageDAO messageDAO) {
         this.rabbitTemplate = rabbitTemplate;
+        this.messageDAO = messageDAO;
     }
 
     private MessageConfirmListener confirmListener = new MessageConfirmListener();
@@ -44,6 +45,9 @@ public class MessageService {
         message.setTo(target);
 
         rabbitTemplate.convertAndSend("message",null,message,new CorrelationData(clientMessage.getMessageId()));
-        return confirmListener.await();
+        var result = confirmListener.await();
+        // 向数据库写入该条消息
+        messageDAO.addMessage(message,clientMessage,result);
+        return result;
     }
 }

@@ -1,8 +1,9 @@
+/*存储 admin端投递的消息*/
 CREATE TABLE `tb_message`  (
-  `message_id` int(11) NOT NULL AUTO_INCREMENT,
-  `message_content` varchar(2048)  NOT NULL,
-  `create_time` datetime(0),
-  `is_send` tinyint(1),
-  message_target INT ,
-  PRIMARY KEY (`message_id`) USING BTREE
+  message_id VARCHAR (128) NOT NULL,
+  message_content TEXT NOT NULL,
+  create_time datetime,
+  is_send TINYINT(1) NOT NULL,
+  message_target VARCHAR(128),
+  PRIMARY KEY (message_id)
 ) ENGINE = InnoDB;

@@ -1,6 +1,5 @@
-package wang.ismy.push.pushadmin;
+package wang.ismy.push.admin;
 
-import lombok.Data;
 import lombok.ToString;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;

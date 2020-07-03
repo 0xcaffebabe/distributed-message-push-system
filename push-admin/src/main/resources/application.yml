@@ -1,6 +1,11 @@
 server:
   port: 1666
 spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///message
+    username: root
+    password: root
   rabbitmq:
     addresses: local
     username: message
