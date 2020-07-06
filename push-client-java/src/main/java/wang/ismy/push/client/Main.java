@@ -1,5 +1,7 @@
 package wang.ismy.push.client;
 
+import wang.ismy.push.common.entity.ClientMessage;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,8 +19,11 @@ import java.net.http.HttpResponse;
 public class Main {
     public static void main(String[] args) throws Exception {
         Client client = new Client("9527");
-        client.setMessageHandler(s->{
-            System.out.println("接收到服务端消息:"+s);
+        client.setMessageHandler(new AutoConfirmMessageHandler(client) {
+            @Override
+            public void handle0(ClientMessage message) {
+                System.out.println("接收到结构化消息:"+message);
+            }
         });
         client.connect();
     }

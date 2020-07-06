@@ -1,2 +1,2 @@
 rootProject.name = 'push-client-java'
-
+includeFlat 'push-common'

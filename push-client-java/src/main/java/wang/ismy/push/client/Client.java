@@ -22,6 +22,7 @@ public class Client {
 
     private MessageHandler messageHandler;
     private final String userId;
+    private PrintWriter printWriter;
 
     public Client(String userId) {
         this.userId = userId;
@@ -40,13 +41,13 @@ public class Client {
         int port = Integer.parseInt(t[1]);
         System.out.println("连接"+connector);
         Socket socket = new Socket(host,port);
-        PrintWriter pw = new PrintWriter(socket.getOutputStream());
+        printWriter = new PrintWriter(socket.getOutputStream());
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         // 启动一条线程向connector发送心跳
         new Thread(()->{
             while (true){
-                pw.print("heartbeat-"+userId);
-                pw.flush();
+                printWriter.print("heartbeat-"+userId);
+                printWriter.flush();
                 try {
                     Thread.sleep(10000);
                 } catch (InterruptedException e) {
@@ -75,6 +76,11 @@ public class Client {
                 throw new RuntimeException(e);
             }
         }).start();
+    }
+
+    public void sendMessage(String message){
+        printWriter.println(message);
+        printWriter.flush();
     }
 
     private String getConnector() throws IOException, InterruptedException {
