@@ -1,6 +1,11 @@
 connector:
   port: ${cport}
 spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql:///message
+    username: root
+    password: root
   cloud:
     nacos:
       discovery:

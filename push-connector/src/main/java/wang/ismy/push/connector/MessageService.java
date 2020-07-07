@@ -29,7 +29,8 @@ import java.io.ObjectInputStream;
 @AllArgsConstructor
 public class MessageService {
     private final ClientService clientService;
-    private RabbitTemplate rabbitTemplate;
+    private final RabbitTemplate rabbitTemplate;
+    private final MessageConfirmDao messageConfirmDao;
 
     @PostConstruct
     public void init() throws IOException {
@@ -57,6 +58,12 @@ public class MessageService {
         if (tmp.startsWith("heartbeat")){
             tmp = tmp.replaceAll("heartbeat-","");
             clientService.flushClientLiveTime(channel,tmp);
+        }else if (tmp.startsWith("confirm")){
+            tmp = tmp.replaceAll("confirm-","");
+            String client = clientService.getClient(channel);
+            if (client != null){
+                messageConfirmDao.addMessageConfirm(tmp,client);
+            }
         }
     }
 

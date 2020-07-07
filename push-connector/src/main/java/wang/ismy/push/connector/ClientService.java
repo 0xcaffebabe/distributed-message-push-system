@@ -84,6 +84,10 @@ public class ClientService {
         return channelMap.get(userId);
     }
 
+    public String getClient (Channel channel){
+        return channelReverseMap.get(channel);
+    }
+
     public void sendMessage(String userId,String message){
         message = message+"\n";
         Channel channel = channelMap.get(userId);
