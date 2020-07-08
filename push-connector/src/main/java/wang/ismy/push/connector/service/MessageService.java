@@ -1,23 +1,26 @@
-package wang.ismy.push.connector;
+package wang.ismy.push.connector.service;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 import io.netty.channel.Channel;
-import io.netty.channel.EventLoop;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.rabbit.annotation.*;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import wang.ismy.push.connector.MessageConfirmDao;
+import wang.ismy.push.connector.MessageDao;
+import wang.ismy.push.connector.entity.MessageConfirmDO;
+import wang.ismy.push.connector.entity.MessageDO;
 
 import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.List;
 
 
 /**
@@ -31,6 +34,7 @@ public class MessageService {
     private final ClientService clientService;
     private final RabbitTemplate rabbitTemplate;
     private final MessageConfirmDao messageConfirmDao;
+    private final MessageDao messageDao;
 
     @PostConstruct
     public void init() throws IOException {
@@ -55,6 +59,7 @@ public class MessageService {
 
     public void read(Channel channel, byte[] bytes){
         String tmp = new String(bytes);
+        tmp = tmp.trim();
         if (tmp.startsWith("heartbeat")){
             tmp = tmp.replaceAll("heartbeat-","");
             clientService.flushClientLiveTime(channel,tmp);
@@ -76,6 +81,20 @@ public class MessageService {
         }else {
             clientService.sendMessage(payload.getTo(),new String(payload.getPayload()));
             log.info("已向{}投递消息{}",payload.getTo(),new String(payload.getPayload()));
+        }
+    }
+
+    /**
+     * 定时任务 负责对发送时间在15分钟内的消息 没有接受到的客户端进行消息重试
+     */
+    @Scheduled(fixedDelay = 5*1000)
+    @Async
+    public void retrySendMessage(){
+        List<MessageDO> list = messageDao.getLast15MinutesMessage();
+        log.info("最近 15 分钟 消息数:{}",list.size());
+        for (int i = 0; i < list.size(); i++) {
+            List<MessageConfirmDO> confirmList = messageConfirmDao.getByMessageId(list.get(i).getMessageId());
+            log.info("接收到消息 {} 的用户有 {}",list.get(i).getMessageId(),confirmList.size());
         }
     }
 }

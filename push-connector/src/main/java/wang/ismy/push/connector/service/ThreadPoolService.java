@@ -1,4 +1,4 @@
-package wang.ismy.push.connector;
+package wang.ismy.push.connector.service;
 
 import org.springframework.stereotype.Service;
 

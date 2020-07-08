@@ -1,4 +1,4 @@
-package wang.ismy.push.connector;
+package wang.ismy.push.connector.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

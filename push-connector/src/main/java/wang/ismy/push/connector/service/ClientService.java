@@ -1,12 +1,10 @@
-package wang.ismy.push.connector;
+package wang.ismy.push.connector.service;
 
-import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import wang.ismy.push.common.entity.Message;
 
 import java.time.LocalDateTime;
 import java.util.Collection;

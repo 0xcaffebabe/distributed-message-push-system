@@ -1,4 +1,4 @@
-package wang.ismy.push.connector;
+package wang.ismy.push.connector.service;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import wang.ismy.push.connector.ConnectorHandler;
 
 import javax.annotation.PostConstruct;
 
