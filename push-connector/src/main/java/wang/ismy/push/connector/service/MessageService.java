@@ -92,9 +92,33 @@ public class MessageService {
     public void retrySendMessage(){
         List<MessageDO> list = messageDao.getLast15MinutesMessage();
         log.info("最近 15 分钟 消息数:{}",list.size());
-        for (int i = 0; i < list.size(); i++) {
-            List<MessageConfirmDO> confirmList = messageConfirmDao.getByMessageId(list.get(i).getMessageId());
-            log.info("接收到消息 {} 的用户有 {}",list.get(i).getMessageId(),confirmList.size());
+        for (MessageDO messageDO : list) {
+            String messageType = StringUtils.isEmpty(messageDO.getMessageTarget()) ? "广播消息" : "对点消息";
+            boolean isBroadcast = StringUtils.isEmpty(messageDO.getMessageTarget());
+            log.info("消息 {} 为 {}",messageDO.getMessageId(), messageType);
+            List<MessageConfirmDO> confirmList = messageConfirmDao.getByMessageId(messageDO.getMessageId());
+            log.info("接收到消息 {} 的用户有 {}",messageDO.getMessageId(),confirmList.size());
+
+            if(isBroadcast){
+
+            }else{
+                retryPeerMessage(messageDO,confirmList);
+            }
         }
+    }
+
+    private void retryBroadcast(MessageDO messageDO,List<MessageConfirmDO> clientList){
+
+    }
+
+    private void retryPeerMessage(MessageDO messageDO,List<MessageConfirmDO> clientList){
+        // 消息确认列表不为空 表名客户已经收到消息
+        if (!clientList.isEmpty()){
+            return;
+        }
+
+        log.info("对客户 {} 进行重试消息 {}", messageDO.getMessageTarget(),messageDO.getMessageId());
+        clientService.sendMessage(messageDO.getMessageTarget(),messageDO.getMessageContent());
+
     }
 }
