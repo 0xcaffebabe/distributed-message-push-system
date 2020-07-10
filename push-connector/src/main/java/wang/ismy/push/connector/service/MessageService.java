@@ -20,7 +20,9 @@ import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -100,7 +102,7 @@ public class MessageService {
             log.info("接收到消息 {} 的用户有 {}",messageDO.getMessageId(),confirmList.size());
 
             if(isBroadcast){
-
+                retryBroadcast(messageDO,confirmList);
             }else{
                 retryPeerMessage(messageDO,confirmList);
             }
@@ -108,11 +110,20 @@ public class MessageService {
     }
 
     private void retryBroadcast(MessageDO messageDO,List<MessageConfirmDO> clientList){
+        // 对当前在线用户与消息确认用户取差集
+        Collection<String> onlineClients = clientService.getClients();
+        var needsRetryList = onlineClients.stream().filter(online->
+            clientList.stream().noneMatch(confirm->confirm.getMessageTarget().equals(online))
+        ).collect(Collectors.toList());
 
+        log.info("广播消息 {} 需要重试客户数量:{}",messageDO.getMessageId(),needsRetryList.size());
+        for (String s : needsRetryList) {
+            clientService.sendMessage(s,messageDO.getMessageContent());
+        }
     }
 
     private void retryPeerMessage(MessageDO messageDO,List<MessageConfirmDO> clientList){
-        // 消息确认列表不为空 表名客户已经收到消息
+        // 消息确认列表不为空 表明客户已经收到消息
         if (!clientList.isEmpty()){
             return;
         }
