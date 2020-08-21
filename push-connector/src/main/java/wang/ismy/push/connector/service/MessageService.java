@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.stream.Collectors;
 
 
@@ -37,7 +39,7 @@ public class MessageService {
     private final RabbitTemplate rabbitTemplate;
     private final MessageConfirmDao messageConfirmDao;
     private final MessageDao messageDao;
-
+    private Set<Long> messageSet = new ConcurrentSkipListSet<>();
     @PostConstruct
     public void init() throws IOException {
         var channel = rabbitTemplate.getConnectionFactory().createConnection().createChannel(true);
@@ -49,8 +51,12 @@ public class MessageService {
             @Override
             public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
                 try {
+                    if (messageSet.contains(envelope.getDeliveryTag())){
+                        log.warn("消息:{}已处理过",envelope.getDeliveryTag());
+                        return;
+                    }
                     wang.ismy.push.common.entity.Message o = (wang.ismy.push.common.entity.Message) new ObjectInputStream(new ByteArrayInputStream(body)).readObject();
-                    onMessage(o);
+                    onMessage(o,envelope.getDeliveryTag());
                     channel.basicAck(envelope.getDeliveryTag(),false);
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
@@ -74,7 +80,7 @@ public class MessageService {
         }
     }
 
-    public void onMessage(wang.ismy.push.common.entity.Message payload) throws IOException {
+    public void onMessage(wang.ismy.push.common.entity.Message payload,Long tag) throws IOException {
         // 发送对象为空，代表是一条广播消息
         log.info("get message:{}",payload);
         if (StringUtils.isEmpty(payload.getTo())){
@@ -84,6 +90,7 @@ public class MessageService {
             clientService.sendMessage(payload.getTo(),new String(payload.getPayload()));
             log.info("已向{}投递消息{}",payload.getTo(),new String(payload.getPayload()));
         }
+        messageSet.add(tag);
     }
 
     /**
