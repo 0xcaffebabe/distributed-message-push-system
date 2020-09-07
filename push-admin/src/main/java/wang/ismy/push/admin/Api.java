@@ -15,7 +15,7 @@ public class Api {
 
     private MessageService messageService;
 
-    @RequestMapping("message")
+    @RequestMapping(value = "message",produces = "application/json;charset=utf8")
     public String sendMessage(String msg,String target) throws JsonProcessingException, InterruptedException {
         var result = messageService.sendTextMessage(target,msg);
         if (!result.ack){
