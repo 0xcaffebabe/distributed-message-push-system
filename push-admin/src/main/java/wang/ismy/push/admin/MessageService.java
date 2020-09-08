@@ -20,15 +20,15 @@ import java.util.UUID;
 @Slf4j
 public class MessageService {
 
-    private RabbitTemplate rabbitTemplate;
-    private MessageDAO messageDAO;
+    private final RabbitTemplate rabbitTemplate;
+    private final MessageDAO messageDAO;
+    private final MessageConfirmListener confirmListener;
 
-    public MessageService(RabbitTemplate rabbitTemplate,MessageDAO messageDAO) {
+    public MessageService(RabbitTemplate rabbitTemplate,MessageDAO messageDAO,MessageConfirmListener listener) {
         this.rabbitTemplate = rabbitTemplate;
         this.messageDAO = messageDAO;
+        confirmListener = listener;
     }
-
-    private MessageConfirmListener confirmListener = new MessageConfirmListener();
 
     @PostConstruct
     public void init(){
