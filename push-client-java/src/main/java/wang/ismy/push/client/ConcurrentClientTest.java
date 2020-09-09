@@ -17,7 +17,7 @@ public class ConcurrentClientTest {
         for (int i = 0; i < n; i++) {
             int finalI = i;
             new Thread(()->{
-                Client client = new Client(finalI +"");
+                BioClient client = new BioClient(finalI +"");
                 client.setMessageHandler(s->{
                     if ("abc".equals(s)){
                         receives.incrementAndGet();

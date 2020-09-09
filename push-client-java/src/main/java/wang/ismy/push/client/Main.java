@@ -9,7 +9,7 @@ import wang.ismy.push.common.entity.ClientMessage;
  */
 public class Main {
     public static void main(String[] args) throws Exception {
-        Client client = new Client("9528");
+        BioClient client = new BioClient("9528");
         client.setMessageHandler(new AutoConfirmMessageHandler(client) {
             @Override
             public void handle0(ClientMessage message) {

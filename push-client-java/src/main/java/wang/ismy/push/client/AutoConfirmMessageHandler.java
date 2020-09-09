@@ -12,9 +12,9 @@ import java.util.concurrent.ConcurrentSkipListSet;
  */
 public abstract class AutoConfirmMessageHandler implements MessageHandler{
 
-    private final Client client;
+    private final BioClient client;
     private final Set<String> messageSet = new ConcurrentSkipListSet<>();
-    public AutoConfirmMessageHandler(Client client) {
+    public AutoConfirmMessageHandler(BioClient client) {
         this.client = client;
     }
 
