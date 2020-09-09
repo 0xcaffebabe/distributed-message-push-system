@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentSkipListSet;
 public abstract class AutoConfirmMessageHandler implements MessageHandler{
 
     private final Client client;
-    private Set<String> messageSet = new ConcurrentSkipListSet<>();
+    private final Set<String> messageSet = new ConcurrentSkipListSet<>();
     public AutoConfirmMessageHandler(Client client) {
         this.client = client;
     }
