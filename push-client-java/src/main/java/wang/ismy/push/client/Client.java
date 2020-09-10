@@ -11,5 +11,9 @@ public interface Client {
      * 连接到服务端
      * @throws Exception
      */
-    void connect() throws Exception;
+    void connect(Connector connector) throws Exception;
+
+    void send(String message);
+
+    void close() throws Exception;
 }
