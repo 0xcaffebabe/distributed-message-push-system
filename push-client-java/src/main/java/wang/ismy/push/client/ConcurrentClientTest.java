@@ -1,6 +1,10 @@
 package wang.ismy.push.client;
 
+import wang.ismy.push.common.entity.ClientMessage;
+
+import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -14,15 +18,26 @@ public class ConcurrentClientTest {
         int n = 1000;
         AtomicInteger receives = new AtomicInteger();
         CountDownLatch latch = new CountDownLatch(n);
+        CyclicBarrier barrier = new CyclicBarrier(n);
         for (int i = 0; i < n; i++) {
             int finalI = i;
             new Thread(()->{
+                try {
+                    barrier.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
                 BioClient client = new BioClient(finalI +"");
-                client.setMessageHandler(s->{
-                    if ("abc".equals(s)){
-                        receives.incrementAndGet();
-                        System.out.println(receives);
-                        latch.countDown();
+                client.setMessageHandler(new AutoConfirmMessageHandler(client) {
+                    @Override
+                    public void handle0(ClientMessage message) {
+                        if ("con-test".equals(message.getPayload())){
+                            receives.incrementAndGet();
+                            System.out.println("消息到达率:"+receives.get()*1.0/n*100+"%");
+                            latch.countDown();
+                        }
                     }
                 });
                 try {
