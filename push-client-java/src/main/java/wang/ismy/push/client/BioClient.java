@@ -19,8 +19,9 @@ public class BioClient implements Client {
     }
 
     private MessageHandler messageHandler;
+    private Connector connector;
     private final String userId;
-    private PrintWriter printWriter;
+    private BioClientThreadAndIoManager manager;
     private final Logger log = Logger.getInstance();
 
     public BioClient(String userId) {
@@ -37,53 +38,119 @@ public class BioClient implements Client {
                 return;
             }
         }
-
+        this.connector = connector;
         Socket socket = new Socket(connector.getHost(),connector.getPort());
-        printWriter = new PrintWriter(socket.getOutputStream());
-        BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        // 启动一条线程向connector发送心跳
-        new Thread(()->{
-            while (true){
-                printWriter.print("heartbeat-"+userId);
-                printWriter.flush();
-                try {
-                    Thread.sleep(10000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }).start();
-        // 这条线程用来接收服务端的消息
-        new Thread(()->{
-            while (true){
+        manager = new BioClientThreadAndIoManager(socket,this);
+        manager.startThread();
+    }
 
-                try {
-                    String s = br.readLine();
-                    if (messageHandler != null) {
-                        messageHandler.handle(s);
-                    }
-                } catch (IOException e) {
-                    // 发生异常重新连接
-                    System.err.println("连接发生异常:"+e);
-                    break;
-                }
-            }
-            try {
-                connect(connector);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).start();
+    public void reconnect() throws Exception {
+        if (connector == null){
+            throw new IllegalStateException("connector is null!!");
+        }
+        connect(connector);
     }
 
     @Override
+    public void send(String message){
+        manager.send(message);
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (manager != null) {
+            manager.shutdown();
+        }
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public MessageHandler getMessageHandler() {
+        return messageHandler;
+    }
+}
+
+/**
+ * 对连接线程进行管理
+ */
+class BioClientThreadAndIoManager {
+    private Thread heartbeatThread;
+    private Thread ioThread;
+    private BioClient client;
+    private Socket socket;
+    private PrintWriter printWriter;
+    private BufferedReader bufferedReader;
+    private volatile boolean running = true;
+    private Logger log = Logger.getInstance();
+    public BioClientThreadAndIoManager(Socket socket, BioClient client) throws IOException {
+        this.client = client;
+        this.socket = socket;
+        printWriter = new PrintWriter(socket.getOutputStream());
+        bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        createHeartbeatThread();
+        createIoThread();
+    }
+
     public void send(String message){
         printWriter.println(message);
         printWriter.flush();
     }
 
-    @Override
-    public void close() throws Exception {
-        throw new UnsupportedOperationException();
+    public void shutdown(){
+        running = false;
+        try {
+            socket.close();
+            log.info("socket 连接已关闭");
+        } catch (IOException e){
+            log.info("关闭socket发生异常:"+e.getMessage());
+        }
+
+    }
+
+    public void startThread(){
+        heartbeatThread.start();
+        ioThread.start();
+    }
+
+    private void createHeartbeatThread(){
+        heartbeatThread = new Thread(()->{
+            while (running){
+                try {
+                send("heartbeat-"+client.getUserId());
+                Thread.sleep(10000);
+                } catch (Exception e) {
+                    log.info("心跳线程发生异常:"+e.getMessage());
+                }
+            }
+            log.info("心跳线程已停止");
+            shutdown();
+        });
+    }
+
+    private void createIoThread(){
+        ioThread = new Thread(()->{
+            while (running){
+                try {
+                    String s = bufferedReader.readLine();
+                    if (client.getMessageHandler() != null) {
+                        client.getMessageHandler().handle(s);
+                    }
+                } catch (IOException e) {
+                    // 发生异常　等待一定时间后重试
+                    System.err.println("连接发生异常:"+e+"5s 后重新连接");
+                    try {
+                        Thread.sleep(5000);
+                        client.reconnect();
+                        break;
+                    } catch (Exception interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
+                }
+            }
+            log.info("io 线程已停止");
+            shutdown();
+        });
     }
 }
