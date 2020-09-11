@@ -1,4 +1,4 @@
-package wang.ismy.push.client;
+package wang.ismy.push.client.message;
 
 /**
  * @author MY

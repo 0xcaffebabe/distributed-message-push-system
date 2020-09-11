@@ -1,4 +1,7 @@
-package wang.ismy.push.client;
+package wang.ismy.push.client.example;
+
+import wang.ismy.push.client.BioClient;
+import wang.ismy.push.client.Client;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,7 +20,7 @@ public class ConcurrentClientTest {
         for (int i = 0; i < n; i++) {
             int finalI = i;
             new Thread(()->{
-                BioClient client = new BioClient(finalI +"");
+                Client client = new BioClient(finalI +"");
                 client.setMessageHandler(s->{
                     if ("abc".equals(s)){
                         receives.incrementAndGet();
@@ -26,7 +29,7 @@ public class ConcurrentClientTest {
                     }
                 });
                 try {
-                    client.connect();
+                    client.connect(null);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

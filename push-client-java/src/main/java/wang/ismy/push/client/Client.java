@@ -1,5 +1,7 @@
 package wang.ismy.push.client;
 
+import wang.ismy.push.client.message.MessageHandler;
+
 /**
  * 客户端接口定义
  * @author MY
@@ -7,13 +9,11 @@ package wang.ismy.push.client;
  */
 public interface Client {
 
-    /**
-     * 连接到服务端
-     * @throws Exception
-     */
     void connect(Connector connector) throws Exception;
 
     void send(String message);
 
     void close() throws Exception;
+
+    void setMessageHandler(MessageHandler handler);
 }

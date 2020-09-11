@@ -1,7 +1,6 @@
 package wang.ismy.push.client;
 
 import java.io.IOException;
-import java.net.InetAddress;
 
 /**
  * 服务端Connector在客户端的表现
@@ -11,8 +10,8 @@ import java.net.InetAddress;
 public class Connector {
 
     private String lookupAddress;
-    private String connectorIp;
-    private int connectorPort;
+    private String host;
+    private int port;
     private HttpTemplate httpTemplate = new HttpTemplate();
 
     public Connector(String lookupAddress, HttpTemplate httpTemplate) {
@@ -37,20 +36,20 @@ public class Connector {
             return false;
         }
 
-        connectorIp = splitResult[0];
-        connectorPort = Integer.parseInt(splitResult[1]);
+        host = splitResult[0];
+        port = Integer.parseInt(splitResult[1]);
         return true;
     }
 
     public boolean isAvailable(){
-        return connectorIp != null && !"".equals(connectorIp) && connectorPort > 0;
+        return host != null && !"".equals(host) && port > 0;
     }
 
-    public String getConnectorIp() {
-        return connectorIp;
+    public String getHost() {
+        return host;
     }
 
-    public int getConnectorPort() {
-        return connectorPort;
+    public int getPort() {
+        return port;
     }
 }

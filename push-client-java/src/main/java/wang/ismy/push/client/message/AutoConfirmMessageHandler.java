@@ -1,6 +1,7 @@
-package wang.ismy.push.client;
+package wang.ismy.push.client.message;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import wang.ismy.push.client.Client;
 import wang.ismy.push.common.entity.ClientMessage;
 
 import java.util.Set;
@@ -10,11 +11,11 @@ import java.util.concurrent.ConcurrentSkipListSet;
  * @author MY
  * @date 2020/7/6 15:05
  */
-public abstract class AutoConfirmMessageHandler implements MessageHandler{
+public abstract class AutoConfirmMessageHandler implements MessageHandler {
 
-    private final BioClient client;
+    private final Client client;
     private final Set<String> messageSet = new ConcurrentSkipListSet<>();
-    public AutoConfirmMessageHandler(BioClient client) {
+    public AutoConfirmMessageHandler(Client client) {
         this.client = client;
     }
 
@@ -26,7 +27,7 @@ public abstract class AutoConfirmMessageHandler implements MessageHandler{
                 System.out.println("消息重复："+clientMessage.toString());
                 return;
             }
-            client.sendMessage("confirm-"+clientMessage.getMessageId());
+            client.send("confirm-"+clientMessage.getMessageId());
             this.handle0(clientMessage);
             messageSet.add(clientMessage.getMessageId());
         } catch(Exception e){

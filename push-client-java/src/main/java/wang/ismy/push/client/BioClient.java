@@ -1,20 +1,18 @@
 package wang.ismy.push.client;
 
+import wang.ismy.push.client.message.MessageHandler;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 
 /**
  * @author MY
  * @date 2020/6/30 14:54
  */
-public class BioClient {
+public class BioClient implements Client {
 
     public void setMessageHandler(MessageHandler messageHandler) {
         this.messageHandler = messageHandler;
@@ -23,24 +21,24 @@ public class BioClient {
     private MessageHandler messageHandler;
     private final String userId;
     private PrintWriter printWriter;
+    private final Logger log = Logger.getInstance();
 
     public BioClient(String userId) {
         this.userId = userId;
     }
 
-    public void connect() throws Exception{
-        String connector;
-        try {
-             connector = getConnector();
-        } catch (Exception e){
-            System.out.println("获取connector发生异常:"+e);
-            return;
+    @Override
+    public void connect(Connector connector) throws Exception{
+        if (!connector.isAvailable()) {
+            try {
+                connector.lookupConnector();
+            } catch (Exception e){
+                log.info("获取connector发生异常:"+e);
+                return;
+            }
         }
-        String[] t = connector.split(":");
-        String host = t[0];
-        int port = Integer.parseInt(t[1]);
-        System.out.println("连接"+connector);
-        Socket socket = new Socket(host,port);
+
+        Socket socket = new Socket(connector.getHost(),connector.getPort());
         printWriter = new PrintWriter(socket.getOutputStream());
         BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         // 启动一条线程向connector发送心跳
@@ -71,22 +69,21 @@ public class BioClient {
                 }
             }
             try {
-                connect();
+                connect(connector);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }).start();
     }
 
-    public void sendMessage(String message){
+    @Override
+    public void send(String message){
         printWriter.println(message);
         printWriter.flush();
     }
 
-    private String getConnector() throws IOException, InterruptedException {
-        HttpClient client = HttpClient.newBuilder().build();
-        HttpRequest request = HttpRequest.newBuilder().uri(URI.create("http://127.0.0.1:30001/")).build();
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        return response.body();
+    @Override
+    public void close() throws Exception {
+        throw new UnsupportedOperationException();
     }
 }
