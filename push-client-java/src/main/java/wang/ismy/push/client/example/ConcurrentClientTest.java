@@ -4,6 +4,7 @@ import wang.ismy.push.client.BioClient;
 import wang.ismy.push.client.Client;
 
 import wang.ismy.push.client.factory.ClientFactory;
+import wang.ismy.push.client.factory.ConnectorFactory;
 import wang.ismy.push.client.message.AutoConfirmMessageHandler;
 import wang.ismy.push.common.entity.ClientMessage;
 
@@ -18,7 +19,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ConcurrentClientTest {
 
-
     public static void main(String[] args) throws InterruptedException {
         int n = 1000;
         AtomicInteger receives = new AtomicInteger();
@@ -29,9 +29,7 @@ public class ConcurrentClientTest {
             new Thread(()->{
                 try {
                     barrier.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (BrokenBarrierException e) {
+                } catch (InterruptedException | BrokenBarrierException e) {
                     e.printStackTrace();
                 }
                 Client client = ClientFactory.newBioClient(finalI +"");
@@ -46,7 +44,7 @@ public class ConcurrentClientTest {
                     }
                 });
                 try {
-                    client.connect(null);
+                    client.connect(ConnectorFactory.newConnector("http://192.168.1.100:30001"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
