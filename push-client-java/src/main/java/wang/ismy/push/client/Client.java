@@ -7,13 +7,23 @@ import wang.ismy.push.client.message.MessageHandler;
  * @author MY
  * @date 2020/9/9 20:30
  */
-public interface Client {
+public abstract class Client {
 
-    void connect(Connector connector) throws Exception;
+    protected MessageHandler messageHandler;
 
-    void send(String message);
+    public abstract void connect(Connector connector) throws Exception;
 
-    void close() throws Exception;
+    public abstract void send(String message);
 
-    void setMessageHandler(MessageHandler handler);
+    protected void onMessage(String msg){
+        if (messageHandler != null) {
+            messageHandler.handle(msg);
+        }
+    }
+
+    public abstract void close() throws Exception;
+
+    public void setMessageHandler(MessageHandler handler){
+        this.messageHandler = handler;
+    }
 }

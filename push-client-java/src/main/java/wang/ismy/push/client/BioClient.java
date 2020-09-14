@@ -12,13 +12,8 @@ import java.net.Socket;
  * @author MY
  * @date 2020/6/30 14:54
  */
-public class BioClient implements Client {
+public class BioClient extends Client {
 
-    public void setMessageHandler(MessageHandler messageHandler) {
-        this.messageHandler = messageHandler;
-    }
-
-    private MessageHandler messageHandler;
     private Connector connector;
     private final String userId;
     private BioClientThreadAndIoManager manager;
@@ -48,6 +43,8 @@ public class BioClient implements Client {
         if (connector == null){
             throw new IllegalStateException("connector is null!!");
         }
+        // 重新连接之前必须重新获取connector
+        connector.lookupConnector();
         connect(connector);
     }
 
@@ -139,7 +136,7 @@ class BioClientThreadAndIoManager {
                     }
                 } catch (IOException e) {
                     // 发生异常　等待一定时间后重试
-                    System.err.println("连接发生异常:"+e+"5s 后重新连接");
+                    System.err.println("连接发生异常:"+e+" 5s 后重新连接");
                     try {
                         Thread.sleep(5000);
                         client.reconnect();
