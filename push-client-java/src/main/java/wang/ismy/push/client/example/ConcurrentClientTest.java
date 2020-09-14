@@ -1,6 +1,5 @@
 package wang.ismy.push.client.example;
 
-import wang.ismy.push.client.BioClient;
 import wang.ismy.push.client.Client;
 
 import wang.ismy.push.client.factory.ClientFactory;

@@ -1,7 +1,7 @@
 package wang.ismy.push.client.factory;
 
 import org.junit.Test;
-import wang.ismy.push.client.BioClient;
+import wang.ismy.push.client.bio.BioClient;
 import wang.ismy.push.client.Client;
 
 import static org.junit.Assert.*;

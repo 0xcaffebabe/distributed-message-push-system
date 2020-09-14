@@ -6,7 +6,7 @@ public class Logger {
 
     private Logger() {}
 
-    void info(String msg, Object...args){
+    public void info(String msg, Object...args){
         System.out.println(msg);
     }
 

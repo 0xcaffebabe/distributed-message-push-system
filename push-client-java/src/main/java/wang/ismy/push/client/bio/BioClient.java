@@ -1,0 +1,70 @@
+package wang.ismy.push.client.bio;
+
+import wang.ismy.push.client.Client;
+import wang.ismy.push.client.Connector;
+import wang.ismy.push.client.Logger;
+import wang.ismy.push.client.message.MessageHandler;
+
+import java.net.Socket;
+
+/**
+ * @author MY
+ * @date 2020/6/30 14:54
+ */
+public class BioClient extends Client {
+
+    private Connector connector;
+    private final String userId;
+    private BioClientThreadAndIoManager manager;
+    private final Logger log = Logger.getInstance();
+
+    public BioClient(String userId) {
+        this.userId = userId;
+    }
+
+    @Override
+    public void connect(Connector connector) throws Exception{
+        if (!connector.isAvailable()) {
+            try {
+                connector.lookupConnector();
+            } catch (Exception e){
+                log.info("获取connector发生异常:"+e);
+                return;
+            }
+        }
+        this.connector = connector;
+        Socket socket = new Socket(connector.getHost(),connector.getPort());
+        manager = new BioClientThreadAndIoManager(socket,this);
+        manager.startThread();
+    }
+
+    public void reconnect() throws Exception {
+        if (connector == null){
+            throw new IllegalStateException("connector is null!!");
+        }
+        // 重新连接之前必须重新获取connector
+        connector.lookupConnector();
+        connect(connector);
+    }
+
+    @Override
+    public void send(String message){
+        manager.send(message);
+    }
+
+    @Override
+    public void close() throws Exception {
+        if (manager != null) {
+            manager.shutdown();
+        }
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public MessageHandler getMessageHandler() {
+        return messageHandler;
+    }
+}
+
