@@ -3,8 +3,11 @@ package wang.ismy.push.client.bio;
 import wang.ismy.push.client.Client;
 import wang.ismy.push.client.Connector;
 import wang.ismy.push.client.Logger;
+import wang.ismy.push.client.factory.ManagerFactory;
+import wang.ismy.push.client.factory.SocketFactory;
 import wang.ismy.push.client.message.MessageHandler;
 
+import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -15,11 +18,15 @@ public class BioClient extends Client {
 
     private Connector connector;
     private final String userId;
+    private final SocketFactory socketFactory;
+    private final ManagerFactory managerFactory;
     private BioClientThreadAndIoManager manager;
     private final Logger log = Logger.getInstance();
 
-    public BioClient(String userId) {
+    public BioClient(String userId,SocketFactory socketFactory, ManagerFactory managerFactory) {
         this.userId = userId;
+        this.socketFactory = socketFactory;
+        this.managerFactory = managerFactory;
     }
 
     @Override
@@ -29,12 +36,12 @@ public class BioClient extends Client {
                 connector.lookupConnector();
             } catch (Exception e){
                 log.info("获取connector发生异常:"+e);
-                return;
+                throw new IOException(e);
             }
         }
         this.connector = connector;
-        Socket socket = new Socket(connector.getHost(),connector.getPort());
-        manager = new BioClientThreadAndIoManager(socket,this);
+        Socket socket = socketFactory.newSocket(connector.getHost(), connector.getPort());
+        manager = managerFactory.newBioManager(socket, this);
         manager.startThread();
     }
 
@@ -49,6 +56,9 @@ public class BioClient extends Client {
 
     @Override
     public void send(String message){
+        if (manager == null) {
+            throw new IllegalStateException("connector is null");
+        }
         manager.send(message);
     }
 
