@@ -2,8 +2,8 @@
 
 class Client:
 
-    def __init__(self, message_handler):
-        self.message_handler = message_handler
+    def __init__(self, messageHandler):
+        self.messageHandler = messageHandler
 
     def connect(self, connector):
         ...
@@ -11,9 +11,9 @@ class Client:
     def send(self, msg):
         ...
 
-    def on_message(self, msg):
-        if self.message_handler is None:
-            self.message_handler.handle(msg)
+    def onMessage(self, msg):
+        if self.messageHandler is None:
+            self.messageHandler.handle(msg)
 
     def close(self):
         ...

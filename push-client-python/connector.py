@@ -8,7 +8,7 @@ class Connector:
         self.host = ''
         self.port = 0
 
-    def lookup_connector(self):
+    def lookupConnector(self):
         response = requests.get(self.lookup_address).text
         splitResult = response.split(':')
         if len(splitResult) != 2:
@@ -16,5 +16,5 @@ class Connector:
         self.host = splitResult[0]
         self.port = int(splitResult[1])
 
-    def is_available(self):
+    def isAvailable(self):
         return self.host != '' and self.port > 0
