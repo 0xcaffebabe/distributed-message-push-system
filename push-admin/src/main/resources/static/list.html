@@ -4,27 +4,50 @@
     <meta charset="UTF-8">
     <title>消息发送管理</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+        .container {
+            margin-top: 50px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <button class="btn btn-primary" style="float:right">发送消息</button>
-        <table class="table">
-            <tr>
-                <th>消息id</th>
-                <th>发送对象</th>
-                <th>消息内容</th>
-                <th>送达人数</th>
-                <th>创建时间</th>
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>全体</td>
-                <td>cxk</td>
-                <th><a href="#">256</a></th>
-                <td>2020</td>
-            </tr>
-        </table>
+        <div class="row">
+            <div class="col-md-8">
+                <table class="table">
+                    <tr>
+                        <th>消息id</th>
+                        <th>发送对象</th>
+                        <th>消息内容</th>
+                        <th>送达人数</th>
+                        <th>创建时间</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>全体</td>
+                        <td>cxk</td>
+                        <th><a href="#">256</a></th>
+                        <td>2020</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-4">
+                <label for="msgInput">消息内容：</label>
+                <input type="text" id="msgInput" class="form-control">
+                <label for="pushTarget">推送对象：</label>
+                <select id="pushTarget" class="form-control">
+                    <option value="0">全体</option>
+                    <option value="1">单一用户</option>
+                </select>
+                <label for="targetUser">用户：</label>
+                <input type="text" id="targetUser" disabled class="form-control">
+                <button id="pushButton" class="btn btn-success" style="margin-top: 10px;float:right">推送</button>
+            </div>
+        </div>
+
     </div>
 
 </body>
+<script src="https://cdn.bootcdn.net/ajax/libs/axios/0.1.0/axios.min.js"></script>
+<script src="./js/push.js"></script>
 </html>
