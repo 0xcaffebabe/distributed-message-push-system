@@ -5,8 +5,7 @@ from socket_factory import *
 from bio_thread_io_manager import *
 class BioClient(Client):
 
-  def __init__(self, userId, socketFactory: SocketFactory, messageHandler):
-    super().__init__(messageHandler)
+  def __init__(self, userId, socketFactory: SocketFactory):
     self.userId = userId
     self.socketFactory = socketFactory
   
