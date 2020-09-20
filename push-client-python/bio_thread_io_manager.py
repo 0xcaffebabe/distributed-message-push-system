@@ -6,7 +6,7 @@ import time
 import threading
 
 class BioThreadIoManager:
-  def __init__(self, s: socket, client: BioClient):
+  def __init__(self, s: socket, client):
     self.client = client
     self.socketChannel = SocketChannel(s)
     self.running = False
@@ -14,7 +14,7 @@ class BioThreadIoManager:
   def send(self, msg):
     self.socketChannel.writeAndFlush(msg)
   
-  def shutdown(self):
+  def close(self):
     self.running = False
     self.socketChannel.close()
 
@@ -28,13 +28,23 @@ class BioThreadIoManager:
   
   def __heartbeat__(self):
     while self.running:
-      self.send('heartbeat-' + self.client.userId)
+      try:
+        self.send('heartbeat-' + self.client.userId)
+      except:
+        print('发送心跳失败')
       time.sleep(10)
     print ('heartbeat stop!')
+    self.close()
   
   def __ioloop__(self):
     while self.running:
-      str = self.socketChannel.readLine()
-      print ('receive:' + str)
-      self.client.onMessage(str)
+      try:
+        str = self.socketChannel.readLine()
+        self.client.onMessage(str)
+      except Exception as e:
+        print('连接发生异常 5s　后重新连接')
+        time.sleep(5)
+        self.client.reconnect()
+        break
     print ("ioloop thread stop!")
+    self.close()

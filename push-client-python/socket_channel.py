@@ -10,7 +10,7 @@ class SocketChannel:
     self.socket.send(bytes(msg,encoding='utf8'))
   
   def readLine(self):
-    return self.buffer.readline()
+    return self.buffer.readline().replace('\n', '')
   
   def close(self):
     self.socket.close()

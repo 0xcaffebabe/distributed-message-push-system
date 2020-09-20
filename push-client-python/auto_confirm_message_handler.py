@@ -17,13 +17,5 @@ class AutoConfirmMessageHandler():
       clientMessage.payload = maps['payload']
       self.callback(clientMessage)
       self.client.send('confirm-' + clientMessage.messageId)
-    except:
+    except Exception as e:
       print ('接收到非结构化消息:' + msg)
-    
-
-handler = AutoConfirmMessageHandler()
-data = {
-  'messageId': '1',
-  'messageType': 'common'
-}
-handler.handle('comm')

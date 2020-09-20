@@ -28,7 +28,6 @@ class BioClient(Client):
   def send(self, msg):
     if self.manager is None :
       raise Exception('manager is null')
-    
     self.manager.send(msg)
   
   def close(self):

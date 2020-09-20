@@ -4,3 +4,5 @@ class ClientMessage:
     self.messageId = ''
     self.messageType = ''
     self.payload = ''
+  def __str__(self):
+    return 'id:' + self.messageId + ', type:' + self.messageType + ', payload:' + self.payload
