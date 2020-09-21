@@ -5,8 +5,7 @@ from socket_factory import *
 from bio_thread_io_manager import *
 class BioClient(Client):
 
-  def __init__(self, userId, socketFactory: SocketFactory, messageHandler):
-    super().__init__(messageHandler)
+  def __init__(self, userId, socketFactory: SocketFactory):
     self.userId = userId
     self.socketFactory = socketFactory
   
@@ -29,7 +28,6 @@ class BioClient(Client):
   def send(self, msg):
     if self.manager is None :
       raise Exception('manager is null')
-    
     self.manager.send(msg)
   
   def close(self):
