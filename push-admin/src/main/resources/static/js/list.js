@@ -11,7 +11,7 @@ async function renderMessageList(){
         <tr>
             <td><div class="messageId" title="${list[i].messageId}">${list[i].messageId}</div></td>
             <td>${list[i].messageTarget === null ? '全体': list[i].messageTarget}</td>
-            <th><a href="#"><a href="#">256</a></a></th>
+            <th><a href="#"><a href="#">${list[i].arrivalCount}</a></a></th>
             <td>${list[i].createTime}</td>
             <td><a class="btn btn-primary btn-sm">查看</a></td>
         </tr>

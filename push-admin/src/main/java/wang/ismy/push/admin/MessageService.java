@@ -54,8 +54,6 @@ public class MessageService {
     }
 
     public List<MessageDTO> getMessageList(){
-        var list = messageDAO.findLimit10();
-        // todo arrivalCount
-        return list;
+        return messageDAO.findLimit10();
     }
 }
