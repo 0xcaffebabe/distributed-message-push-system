@@ -64,6 +64,7 @@ class MessageDAOTest {
     @Transactional
     void findLimit10(){
         addMessage();
+        jdbcTemplate.update("INSERT INTO tb_message_confirm VALUES('1','9527',NOW())");
 
         var list = messageDAO.findLimit10();
         assertEquals(1,list.size());
