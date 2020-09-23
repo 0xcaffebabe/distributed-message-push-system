@@ -1,0 +1,14 @@
+{
+  "name": "push-client-javascript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "none",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "MY",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.20.0"
+  }
+}

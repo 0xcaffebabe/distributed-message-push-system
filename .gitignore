@@ -3,3 +3,4 @@
 build
 *.class
 *.jar
+node_modules
