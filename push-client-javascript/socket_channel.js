@@ -1,4 +1,5 @@
 const net = require('net')
+const socketFactory = require('./socket_factory')
 
 class SocketChannel {
 
@@ -6,6 +7,7 @@ class SocketChannel {
     this.socket = socket
     this.dataQueue = []
     this.callback = callback
+
     this.socket.on('data',data => {
       const datas = data.toString().split('\n')
       for(let i = 0;i<datas.length;i++){
@@ -19,14 +21,17 @@ class SocketChannel {
   writeAndFlush(msg){
     this.socket.write(msg)
   }
+
+  close(){
+    
+  }
 }
 
-const client = net.connect(
-  {port: 80, host: 'baidu.com'},
-  (e) => {
-    console.log(e)
-  }
-)
+async function main(){
+  const socket = await socketFactory.newSocket('baidu.com', 80)
 
-const sc = new SocketChannel(client, data => console.log(data))
-sc.writeAndFlush('GET / HTTP/1.1\r\nHost: www.baidu.com\r\n\r\n')
+  const sc = new SocketChannel(socket, data => console.log(data))
+  sc.writeAndFlush('GET / HTTP/1.1\r\nHost: www.baidu.com\r\n\r\n')  
+}
+
+main()

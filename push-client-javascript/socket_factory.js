@@ -12,9 +12,4 @@ async function newSocket(host, ip){
   })
 }
 
-async function test(){
-  const client = await newSocket()
-  console.log(client)
-}
-
-test()
+module.exports = { newSocket }
