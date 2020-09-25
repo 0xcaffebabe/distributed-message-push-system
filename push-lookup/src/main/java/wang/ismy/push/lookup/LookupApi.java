@@ -29,6 +29,9 @@ public class LookupApi {
     @GetMapping
     public String getConnector(){
         ServiceInstance service = loadBalancerClient.choose("connector-service");
+        if (service == null) {
+            return "";
+        }
         return service.getHost()+":"+restTemplate.getForObject(service.getUri()+"/port",String.class);
     }
 
