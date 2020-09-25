@@ -13,7 +13,7 @@ class BioThreadIoManager{
   }
 
   send(msg){
-    self.socketChannel.writeAndFlush(msg)
+    this.socketChannel.writeAndFlush(msg)
   }
 
   close(){
@@ -22,7 +22,14 @@ class BioThreadIoManager{
   }
 
   startThread(){
-    
+    this.heartbeatTimer = setInterval(() => {
+      if (!this.running) {
+        console.log('hearbeat thread stop!')
+        clearInterval(this.heartbeatTimer)
+        return;
+      }
+      this.heartbeat()
+    }, 10000)
   }
 
   heartbeat(){

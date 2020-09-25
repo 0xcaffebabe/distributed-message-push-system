@@ -1,8 +1,6 @@
 
 class Client {
-  constructor(messageHandler){
-    this.messageHandler = messageHandler
-  }
+  constructor(){}
 
   onMessage(msg){
     if (this.messageHandler) {
