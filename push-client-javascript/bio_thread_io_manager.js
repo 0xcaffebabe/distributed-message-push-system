@@ -1,15 +1,10 @@
 const SocketChannel = require('./socket_channel').SocketChannel
 
 class BioThreadIoManager{
-  constructor(socket, client, callback){
+  constructor(socket, client){
     this.client = client
-    this.socketChannel = new SocketChannel(socket, this.onMessage)
+    this.socketChannel = new SocketChannel(socket, client)
     this.running = false
-    this.callback = callback
-  }
-
-  onMessage(msg){
-    this.callback(msg)
   }
 
   send(msg){
@@ -22,6 +17,7 @@ class BioThreadIoManager{
   }
 
   startThread(){
+    this.running = true
     this.heartbeatTimer = setInterval(() => {
       if (!this.running) {
         console.log('hearbeat thread stop!')
@@ -29,15 +25,17 @@ class BioThreadIoManager{
         return;
       }
       this.heartbeat()
-    }, 10000)
+    }, 3000)
   }
 
   heartbeat(){
     try {
-      this.socketChannel.send('heartbeat-' + this.client.userId)
+      this.socketChannel.writeAndFlush('heartbeat-' + this.client.userId)
     }catch(e) {
-      console.log('发送心跳失败')
+      console.error('发送心跳失败', e)
     }
   }
 
 }
+
+module.exports = { BioThreadIoManager }

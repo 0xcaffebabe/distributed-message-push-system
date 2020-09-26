@@ -8,10 +8,12 @@ class AutoConfrimMessageHandler{
   handle(msg){
     try {
       const maps = JSON.parse(msg)
-      self.callback(maps)
-      // TODO auto confirm
+      this.callback(maps)
+      this.client.send('confirm-' + maps.messageId)
     } catch(e){
       console.log('接收到非结构化消息:', msg)
     }
   }
 }
+
+module.exports = { AutoConfrimMessageHandler }

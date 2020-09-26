@@ -2,17 +2,18 @@ const BioThreadIoManager  = require('./bio_thread_io_manager').BioThreadIoManage
 const Client = require('./client').Client
 class BioClient extends Client{
   constructor(userId, socketFactory){
+    super()
     this.userId = userId
     this.socketFactory = socketFactory
   }
 
-  connect(connector) {
+  async connect(connector) {
     if (!connector.isAvailable()) {
-      connector.lookupConnector()
+      await connector.lookupConnector()
     }
 
     this.connector = connector
-    const socket = this.socketFactory.newSocket(connector.host, connector.port)
+    const socket = await this.socketFactory.newSocket(connector.host, connector.port)
     this.manager = new BioThreadIoManager(socket, this, this.onMessage)
     this.manager.startThread()
   }
@@ -39,3 +40,5 @@ class BioClient extends Client{
     }
   }
 }
+
+module.exports = { BioClient }

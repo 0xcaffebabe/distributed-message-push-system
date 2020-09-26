@@ -1,10 +1,10 @@
 
 const net = require('net')
 
-async function newSocket(host, ip){
+async function newSocket(host, port){
   return new Promise((resolve, rejects) => {
     const client = net.connect(
-      {port: 80, host: 'baidu.com'},
+      {host, port},
       (e) => {
         resolve(client)
       }

@@ -22,6 +22,4 @@ class Connector {
   }
 }
 
-let conenctor = new Connector('http://localhost:30001')
-conenctor.lookupConnector()
-console.log(conenctor.isAvailable())
+module.exports = { Connector }

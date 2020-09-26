@@ -3,16 +3,16 @@ const socketFactory = require('./socket_factory')
 
 class SocketChannel {
 
-  constructor(socket,callback){
+  constructor(socket,client){
     this.socket = socket
     this.dataQueue = []
-    this.callback = callback
+    this.client = client
 
     this.socket.on('data',data => {
       const datas = data.toString().split('\n')
       for(let i = 0;i<datas.length;i++){
         if (datas[i]) {
-          this.callback(datas[i])
+          this.client.onMessage(datas[i])
         }
       }
     })
@@ -27,11 +27,4 @@ class SocketChannel {
   }
 }
 
-async function main(){
-  const socket = await socketFactory.newSocket('baidu.com', 80)
-
-  const sc = new SocketChannel(socket, data => console.log(data))
-  sc.writeAndFlush('GET / HTTP/1.1\r\nHost: www.baidu.com\r\n\r\n')  
-}
-
-main()
+module.exports = { SocketChannel }
