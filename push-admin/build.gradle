@@ -19,6 +19,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	implementation 'org.springframework.boot:spring-boot-starter-test'
+	compile group: 'com.alibaba.cloud', name: 'spring-cloud-starter-alibaba-nacos-discovery', version: '2.2.1.RELEASE'
 	compile project(':push-common')
 	annotationProcessor 'org.projectlombok:lombok:1.18.12'
 	compileOnly 'org.projectlombok:lombok:1.18.12'

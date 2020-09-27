@@ -1,18 +1,17 @@
 package wang.ismy.push.admin;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import wang.ismy.push.admin.entity.ConnectorDTO;
 import wang.ismy.push.admin.entity.MessageDTO;
+import wang.ismy.push.admin.service.ConnectorService;
+import wang.ismy.push.admin.service.MessageService;
 import wang.ismy.push.common.MockUtils;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 import static org.mockito.Mockito.*;
@@ -35,7 +34,7 @@ class ApiTest {
         result.correlationData.setId("1");
 
         when(messageService.sendTextMessage(eq(target),eq(content))).thenReturn(result);
-        mockMvc = MockMvcBuilders.standaloneSetup(new Api(messageService)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new Api(messageService, null)).build();
 
         mockMvc.perform(get("/api/message")
                 .param("msg",content)
@@ -52,9 +51,22 @@ class ApiTest {
         List<MessageDTO> list = MockUtils.create(MessageDTO.class, 10);
         when(messageService.getMessageList()).thenReturn(list);
 
-        mockMvc = MockMvcBuilders.standaloneSetup(new Api(messageService)).build();
+        mockMvc = MockMvcBuilders.standaloneSetup(new Api(messageService, null)).build();
 
         mockMvc.perform(get("/api/list"))
+                .andExpect(status().isOk())
+                .andExpect(content().json(JsonUtils.parse(list)));
+    }
+
+    @Test
+    void getConnectorList() throws Exception {
+        ConnectorService connectorService = mock(ConnectorService.class);
+        mockMvc = MockMvcBuilders.standaloneSetup(new Api(null, connectorService)).build();
+
+        var list = MockUtils.create(ConnectorDTO.class,10);
+        when(connectorService.getConnectorList()).thenReturn(list);
+
+        mockMvc.perform(get("/api/connector/list"))
                 .andExpect(status().isOk())
                 .andExpect(content().json(JsonUtils.parse(list)));
     }

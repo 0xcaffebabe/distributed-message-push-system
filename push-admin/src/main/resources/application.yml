@@ -19,3 +19,7 @@ spring:
           enabled: true
           max-attempts: 10
     publisher-confirm-type: correlated
+  cloud:
+    nacos:
+      discovery:
+        server-addr: local:8848

@@ -2,11 +2,19 @@ package wang.ismy.push.admin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import wang.ismy.push.admin.entity.ConnectorDTO;
 import wang.ismy.push.admin.entity.MessageDTO;
+import wang.ismy.push.admin.service.ConnectorService;
+import wang.ismy.push.admin.service.MessageService;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +26,9 @@ import java.util.List;
 @RequestMapping("api")
 public class Api {
 
-    private MessageService messageService;
+    private final MessageService messageService;
+
+    private final ConnectorService connectorService;
 
     @RequestMapping(value = "message",produces = "application/json;charset=utf8")
     public String sendMessage(String msg,String target) throws JsonProcessingException, InterruptedException {
@@ -34,5 +44,11 @@ public class Api {
     public List<MessageDTO> getMessageList(){
         return messageService.getMessageList();
     }
+
+    @GetMapping("connector/list")
+    public List<ConnectorDTO> getConnectorList() throws IOException {
+        return connectorService.getConnectorList();
+    }
+
 
 }

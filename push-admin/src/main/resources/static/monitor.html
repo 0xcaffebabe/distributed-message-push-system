@@ -31,18 +31,11 @@
                 <div class="row">
                     <div class="col-md-6">
                         <h4><span class="glyphicon glyphicon-heart"></span> 实例健康监控</h4>
-                        <table class="table table-hover">
+                        <table class="table table-hover" id="connectorListTable">
                             <tr>
                                 <th>实例</th>
                                 <th>时延</th>
-                            </tr>
-                            <tr class="success">
-                                <td>connector-400002</td>
-                                <td>180ms</td>
-                            </tr>
-                            <tr class="danger">
-                                <td>connector-400003</td>
-                                <td>1000ms</td>
+                                <th>健康程度</th>
                             </tr>
                         </table>
                     </div>
@@ -77,8 +70,10 @@
     </div>
 </div>
 </body>
+<script src="https://cdn.bootcdn.net/ajax/libs/axios/0.1.0/axios.min.js"></script>
 <script src="https://cdn.bootcdn.net/ajax/libs/jquery/1.10.0/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="./js/monitor.js"></script>
 <script>
     $('#myTabs a').click(function (e) {
         e.preventDefault()
