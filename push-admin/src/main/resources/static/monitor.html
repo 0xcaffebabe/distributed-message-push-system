@@ -14,20 +14,64 @@
 </div>
 <div id="container" class="container">
     <ul class="nav nav-tabs nav-pills">
-        <li role="presentation"><a href="#">消息列表</a></li>
+        <li role="presentation"><a href="./list.html">消息列表</a></li>
         <li role="presentation" class="active"><a href="#">监控</a></li>
         <li role="presentation"><a href="#">运维</a></li>
     </ul>
     <div style="margin-top: 20px">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#lookup" aria-controls="home" role="tab" data-toggle="tab">lookup</a></li>
-            <li role="presentation"><a href="#profile" aria-controls="connector" role="tab" data-toggle="tab">connector</a></li>
+            <li role="presentation"><a href="#lookup" aria-controls="home" role="tab" data-toggle="tab">lookup</a></li>
+            <li role="presentation" class="active"><a href="#connector" aria-controls="connector" role="tab" data-toggle="tab">connector</a></li>
         </ul>
         <!-- Tab panes -->
         <div class="tab-content">
-            <div role="tabpanel" class="tab-pane fade in active" id="lookup">lookup</div>
-            <div role="tabpanel" class="tab-pane fade" id="connector">connector</div>
+            <div role="tabpanel" class="tab-pane fade" id="lookup">lookup</div>
+            <div role="tabpanel" class="tab-pane fade in active" id="connector">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h4><span class="glyphicon glyphicon-heart"></span> 实例健康监控</h4>
+                        <table class="table table-hover">
+                            <tr>
+                                <th>实例</th>
+                                <th>时延</th>
+                            </tr>
+                            <tr class="success">
+                                <td>connector-400002</td>
+                                <td>180ms</td>
+                            </tr>
+                            <tr class="danger">
+                                <td>connector-400003</td>
+                                <td>1000ms</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h4><span class="glyphicon glyphicon-user"></span> 在线用户</h4>
+                        <table class="table table-hover">
+                            <tr>
+                                <th>用户</th>
+                                <th>最后活跃时间</th>
+                                <th>操作</th>
+                            </tr>
+                            <tr>
+                                <td>9527</td>
+                                <td>10秒前</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm">踢出</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>9527</td>
+                                <td>10秒前</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm">踢出</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
