@@ -2,13 +2,17 @@ package wang.ismy.push.admin;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.AllArgsConstructor;
+import org.bouncycastle.pqc.crypto.newhope.NHOtherInfoGenerator;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import wang.ismy.push.admin.entity.ClientDTO;
 import wang.ismy.push.admin.entity.ConnectorDTO;
 import wang.ismy.push.admin.entity.MessageDTO;
+import wang.ismy.push.admin.service.ClientService;
 import wang.ismy.push.admin.service.ConnectorService;
 import wang.ismy.push.admin.service.MessageService;
 
@@ -30,6 +34,8 @@ public class Api {
 
     private final ConnectorService connectorService;
 
+    private final ClientService clientService;
+
     @RequestMapping(value = "message",produces = "application/json;charset=utf8")
     public String sendMessage(String msg,String target) throws JsonProcessingException, InterruptedException {
         var result = messageService.sendTextMessage(target,msg);
@@ -50,5 +56,9 @@ public class Api {
         return connectorService.getConnectorList();
     }
 
+    @GetMapping("client/list")
+    public List<ClientDTO> getClientList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "100") Integer length){
+        return clientService.getClients(page, length);
+    }
 
 }

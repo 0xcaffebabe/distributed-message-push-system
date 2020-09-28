@@ -43,7 +43,7 @@ public class ConcurrentClientTest {
                     }
                 });
                 try {
-                    client.connect(ConnectorFactory.newConnector("http://192.168.1.100:30001"));
+                    client.connect(ConnectorFactory.newConnector("http://192.168.1.12:30001"));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

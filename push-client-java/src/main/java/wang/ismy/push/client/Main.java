@@ -13,7 +13,7 @@ import wang.ismy.push.common.entity.ClientMessage;
 public class Main {
     public static void main(String[] args) throws Exception {
         Client client = ClientFactory.newBioClient("9527");
-        Connector connector = ConnectorFactory.newConnector("http://192.168.1.100:30001");
+        Connector connector = ConnectorFactory.newConnector("http://192.168.1.12:30001");
         client.setMessageHandler(new AutoConfirmMessageHandler(client) {
             @Override
             public void handle0(ClientMessage message) {
