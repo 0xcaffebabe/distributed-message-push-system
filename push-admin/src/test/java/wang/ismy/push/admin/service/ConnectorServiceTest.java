@@ -48,7 +48,7 @@ public class ConnectorServiceTest {
                     new DefaultServiceInstance(null, "connector-service","127.0.0.1",i,true);
             instances.add(instance);
         }
-        instances.add(new DefaultServiceInstance(null, "connector-service","172.17.0.1",1999,true));
+        instances.add(new DefaultServiceInstance(null, "connector-service","172.17.0.188",1999,true));
 
         when(discoveryClient.getInstances(eq("connector-service")))
                 .thenReturn(instances);
