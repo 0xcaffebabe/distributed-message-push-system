@@ -28,11 +28,22 @@ public class LookupApi {
 
     @GetMapping
     public String getConnector(){
-        ServiceInstance service = loadBalancerClient.choose("connector-service");
-        if (service == null) {
-            return "";
+        int retries = 0;
+        while (retries <= 5) {
+            ServiceInstance service = loadBalancerClient.choose("connector-service");
+            if (service == null) {
+                return "";
+            }
+
+            try {
+                 String port = restTemplate.getForObject(service.getUri()+"/port",String.class);
+                return service.getHost()+":"+port;
+            }catch (Exception e) {
+                // 发生异常 既有可能是connector 挂了, 重试
+                retries++;
+            }
         }
-        return service.getHost()+":"+restTemplate.getForObject(service.getUri()+"/port",String.class);
+        return "";
     }
 
 
