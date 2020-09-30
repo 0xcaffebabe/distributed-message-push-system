@@ -21,16 +21,13 @@ public class MessageDao {
 
     public List<MessageDO> getLast15MinutesMessage(){
         return jdbcTemplate.query("SELECT * FROM tb_message WHERE create_time >= CURRENT_TIMESTAMP - INTERVAL 15 MINUTE",
-                new RowMapper<MessageDO>() {
-                    @Override
-                    public MessageDO mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        MessageDO messageDO = new MessageDO();
-                        messageDO.setMessageId(rs.getString("message_id"));
-                        messageDO.setMessageContent(rs.getString("message_content"));
-                        messageDO.setMessageTarget(rs.getString("message_target"));
-                        messageDO.setCreateTime(rs.getTimestamp("create_time").toLocalDateTime());
-                        return messageDO;
-                    }
+                (rs, rowNum) -> {
+                    MessageDO messageDO = new MessageDO();
+                    messageDO.setMessageId(rs.getString("message_id"));
+                    messageDO.setMessageContent(rs.getString("message_content"));
+                    messageDO.setMessageTarget(rs.getString("message_target"));
+                    messageDO.setCreateTime(rs.getTimestamp("create_time").toLocalDateTime());
+                    return messageDO;
                 });
     }
 }

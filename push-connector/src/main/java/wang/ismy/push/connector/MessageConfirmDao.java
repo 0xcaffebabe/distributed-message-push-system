@@ -26,15 +26,12 @@ public class MessageConfirmDao {
 
     public List<MessageConfirmDO> getByMessageId(String messageId){
         return jdbcTemplate.query("SELECT * FROM tb_message_confirm WHERE message_id = ?",
-                new RowMapper<MessageConfirmDO>() {
-                    @Override
-                    public MessageConfirmDO mapRow(ResultSet rs, int rowNum) throws SQLException {
-                        MessageConfirmDO MessageConfirmDO = new MessageConfirmDO();
-                        MessageConfirmDO.setMessageId(rs.getString("message_id"));
-                        MessageConfirmDO.setMessageTarget(rs.getString("message_target"));
-                        MessageConfirmDO.setCreateTime(rs.getTimestamp("create_time").toLocalDateTime());
-                        return MessageConfirmDO;
-                    }
+                (rs, rowNum) -> {
+                    MessageConfirmDO messageConfirmDO = new MessageConfirmDO();
+                    messageConfirmDO.setMessageId(rs.getString("message_id"));
+                    messageConfirmDO.setMessageTarget(rs.getString("message_target"));
+                    messageConfirmDO.setCreateTime(rs.getTimestamp("create_time").toLocalDateTime());
+                    return messageConfirmDO;
                 },messageId);
     }
 }
