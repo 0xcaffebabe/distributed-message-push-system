@@ -10,7 +10,8 @@ import wang.ismy.push.admin.MessageConfirmListener;
 import wang.ismy.push.admin.MessageDAO;
 import wang.ismy.push.admin.entity.MessageDTO;
 import wang.ismy.push.common.entity.ClientMessage;
-import wang.ismy.push.common.entity.Message;
+import wang.ismy.push.common.entity.ServerMessage;
+import wang.ismy.push.common.enums.ServerMessageTypeEnum;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -39,23 +40,56 @@ public class MessageService {
         rabbitTemplate.setConfirmCallback(confirmListener);
     }
 
-    public synchronized MessageConfirmListener.ConfirmResult sendTextMessage(String target, String text) throws JsonProcessingException, InterruptedException {
-        ClientMessage clientMessage = new ClientMessage();
-        clientMessage.setPayload(text);
-        clientMessage.setMessageType("TEXT");
-        clientMessage.setMessageId(UUID.randomUUID().toString());
-        Message message = new Message();
-        message.setPayload(new ObjectMapper().writeValueAsBytes(clientMessage));
-        message.setTo(target);
+    public synchronized MessageConfirmListener.ConfirmResult sendSingleTextMessage(String target, String text)
+            throws JsonProcessingException, InterruptedException {
+        ClientMessage clientMessage = generateTextClientMessage(text);
+        ServerMessage message = generateServerMessage(target, clientMessage, ServerMessageTypeEnum.SINGLE_MESSAGE_TYPE);
 
-        rabbitTemplate.convertAndSend("message",null,message,new CorrelationData(clientMessage.getMessageId()));
-        var result = confirmListener.await();
-        // 向数据库写入该条消息
-        messageDAO.addMessage(message,clientMessage,result);
+        MessageConfirmListener.ConfirmResult result = waitMessageDeliveryResult(clientMessage, message);
+
+        recordMessageToDb(clientMessage, message, result);
         return result;
+    }
+
+    public synchronized MessageConfirmListener.ConfirmResult sendBroadcastTextMessage(String text)
+            throws JsonProcessingException, InterruptedException {
+        ClientMessage clientMessage = generateTextClientMessage(text);
+        ServerMessage message = generateServerMessage("", clientMessage, ServerMessageTypeEnum.BROADCAST_MESSAGE_TYPE);
+
+        MessageConfirmListener.ConfirmResult result = waitMessageDeliveryResult(clientMessage, message);
+
+        recordMessageToDb(clientMessage, message, result);
+        return result;
+    }
+
+    private void recordMessageToDb(ClientMessage clientMessage, ServerMessage message, MessageConfirmListener.ConfirmResult result) {
+        messageDAO.addMessage(message, clientMessage, result);
     }
 
     public List<MessageDTO> getMessageList(){
         return messageDAO.findLimit10();
+    }
+
+    private MessageConfirmListener.ConfirmResult waitMessageDeliveryResult(ClientMessage clientMessage, ServerMessage message)
+            throws InterruptedException {
+        rabbitTemplate.convertAndSend("message", null, message, new CorrelationData(clientMessage.getMessageId()));
+        return confirmListener.await();
+    }
+
+    private ServerMessage generateServerMessage(String target, ClientMessage clientMessage, ServerMessageTypeEnum singleMessageType)
+            throws JsonProcessingException {
+        ServerMessage message = new ServerMessage();
+        message.setPayload(new ObjectMapper().writeValueAsBytes(clientMessage));
+        message.setMessageType(singleMessageType);
+        message.setTo(target);
+        return message;
+    }
+
+    private ClientMessage generateTextClientMessage(String text) {
+        ClientMessage clientMessage = new ClientMessage();
+        clientMessage.setPayload(text);
+        clientMessage.setMessageType("TEXT");
+        clientMessage.setMessageId(UUID.randomUUID().toString());
+        return clientMessage;
     }
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.bouncycastle.pqc.crypto.newhope.NHOtherInfoGenerator;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -38,7 +39,13 @@ public class Api {
 
     @RequestMapping(value = "message",produces = "application/json;charset=utf8")
     public String sendMessage(String msg,String target) throws JsonProcessingException, InterruptedException {
-        var result = messageService.sendTextMessage(target,msg);
+        MessageConfirmListener.ConfirmResult result = null;
+        if (!StringUtils.isEmpty(target)) {
+            result = messageService.sendSingleTextMessage(target, msg);
+        }else {
+            result = messageService.sendBroadcastTextMessage(msg);
+        }
+
         if (!result.ack){
             return "消息"+result.correlationData.getId()+"投递失败:"+result.cause;
         }else {

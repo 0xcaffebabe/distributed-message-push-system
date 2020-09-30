@@ -26,7 +26,7 @@ class ApiTest {
     private MockMvc mockMvc;
 
     @Test
-    void sendMessage() throws Exception {
+    void sendSingleTextMessage() throws Exception {
         var messageService = mock(MessageService.class);
         String target = "cxk";
         String content = "msg";
@@ -36,7 +36,30 @@ class ApiTest {
         result.correlationData = new CorrelationData();
         result.correlationData.setId("1");
 
-        when(messageService.sendTextMessage(eq(target),eq(content))).thenReturn(result);
+        when(messageService.sendSingleTextMessage(eq(target),eq(content))).thenReturn(result);
+        mockMvc = MockMvcBuilders.standaloneSetup(new Api(messageService, null,null)).build();
+
+        mockMvc.perform(get("/api/message")
+                .param("msg",content)
+                .param("target",target)
+
+        )
+                .andExpect(status().isOk())
+                .andExpect(content().string("消息1投递成功"));
+    }
+
+    @Test
+    void sendBroadcastTextMessage() throws Exception {
+        var messageService = mock(MessageService.class);
+        String target = "";
+        String content = "msg";
+
+        MessageConfirmListener.ConfirmResult result = new MessageConfirmListener.ConfirmResult();
+        result.ack =true;
+        result.correlationData = new CorrelationData();
+        result.correlationData.setId("1");
+
+        when(messageService.sendBroadcastTextMessage(eq(content))).thenReturn(result);
         mockMvc = MockMvcBuilders.standaloneSetup(new Api(messageService, null,null)).build();
 
         mockMvc.perform(get("/api/message")

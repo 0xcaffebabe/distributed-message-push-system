@@ -10,7 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 import wang.ismy.push.common.entity.ClientMessage;
-import wang.ismy.push.common.entity.Message;
+import wang.ismy.push.common.entity.ServerMessage;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -31,7 +31,7 @@ class MessageDAOTest {
     @Test
     @Transactional
     void addMessage() {
-        Message message = new Message();
+        ServerMessage message = new ServerMessage();
         message.setPayload("content".getBytes());
         message.setTo("cxk");
 

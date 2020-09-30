@@ -11,6 +11,8 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import wang.ismy.push.common.entity.ServerMessage;
+import wang.ismy.push.common.enums.ServerMessageTypeEnum;
 import wang.ismy.push.connector.MessageConfirmDao;
 import wang.ismy.push.connector.MessageDao;
 import wang.ismy.push.connector.entity.MessageConfirmDO;
@@ -55,7 +57,7 @@ public class MessageService {
                         log.warn("消息:{}已处理过",envelope.getDeliveryTag());
                         return;
                     }
-                    wang.ismy.push.common.entity.Message o = (wang.ismy.push.common.entity.Message) new ObjectInputStream(new ByteArrayInputStream(body)).readObject();
+                    ServerMessage o = (ServerMessage) new ObjectInputStream(new ByteArrayInputStream(body)).readObject();
                     onMessage(o,envelope.getDeliveryTag());
                     channel.basicAck(envelope.getDeliveryTag(),false);
                 } catch (ClassNotFoundException e) {
@@ -80,15 +82,14 @@ public class MessageService {
         }
     }
 
-    public void onMessage(wang.ismy.push.common.entity.Message payload,Long tag) throws IOException {
-        // 发送对象为空，代表是一条广播消息
-        log.info("get message:{}",payload);
-        if (StringUtils.isEmpty(payload.getTo())){
-            clientService.broadcast(new String(payload.getPayload()));
+    public void onMessage(ServerMessage serverMessage, Long tag) throws IOException {
+        log.info("get message:{}",serverMessage);
+        if (serverMessage.getMessageType().equals(ServerMessageTypeEnum.BROADCAST_MESSAGE_TYPE)){
+            clientService.broadcast(new String(serverMessage.getPayload()));
             log.info("广播消息已发起");
         }else {
-            clientService.sendMessage(payload.getTo(),new String(payload.getPayload()));
-            log.info("已向{}投递消息{}",payload.getTo(),new String(payload.getPayload()));
+            clientService.sendMessage(serverMessage.getTo(),new String(serverMessage.getPayload()));
+            log.info("已向{}投递消息{}",serverMessage.getTo(),new String(serverMessage.getPayload()));
         }
         messageSet.add(tag);
     }
