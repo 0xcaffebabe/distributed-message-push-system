@@ -17,7 +17,9 @@ public class MessageConfirmListener implements RabbitTemplate.ConfirmCallback {
         public boolean ack;
         public String cause;
     }
+
     private Exchanger<ConfirmResult> confirmResultExchanger = new Exchanger<>();
+
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
         ConfirmResult result = new ConfirmResult();

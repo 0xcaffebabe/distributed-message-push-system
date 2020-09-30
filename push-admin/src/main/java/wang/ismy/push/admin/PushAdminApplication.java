@@ -4,6 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+/**
+ * @author MY
+ */
 @SpringBootApplication
 public class PushAdminApplication {
 
@@ -12,7 +15,7 @@ public class PushAdminApplication {
     }
 
     @Bean
-    public MessageConfirmListener messageConfirmListener(){
+    public MessageConfirmListener messageConfirmListener() {
         return new MessageConfirmListener();
     }
 }

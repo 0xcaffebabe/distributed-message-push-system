@@ -19,16 +19,16 @@ public class MessageDAO {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public int addMessage(ServerMessage message, ClientMessage clientMessage, MessageConfirmListener.ConfirmResult result){
+    public int addMessage(ServerMessage message, ClientMessage clientMessage, MessageConfirmListener.ConfirmResult result) {
         return jdbcTemplate.update("INSERT INTO tb_message(message_id,message_content,create_time,is_send,message_target) VALUES(?,?,NOW(),?,?)",
                 clientMessage.getMessageId(),
                 new String(message.getPayload()),
                 result.ack,
                 message.getTo()
-                );
+        );
     }
 
-    public List<MessageDTO> findLimit10(){
+    public List<MessageDTO> findLimit10() {
         return jdbcTemplate.query("SELECT t1.message_id, t1.message_target, t1.message_content, t1.create_time, COUNT(*) AS arrival_count " +
                         "FROM tb_message AS t1 JOIN tb_message_confirm AS t2 ON t1.message_id = t2.message_id " +
                         "GROUP BY t1.message_id ORDER BY create_time DESC LIMIT 10",

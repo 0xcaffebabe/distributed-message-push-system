@@ -37,24 +37,24 @@ public class Api {
 
     private final ClientService clientService;
 
-    @RequestMapping(value = "message",produces = "application/json;charset=utf8")
-    public String sendMessage(String msg,String target) throws JsonProcessingException, InterruptedException {
+    @RequestMapping(value = "message", produces = "application/json;charset=utf8")
+    public String sendMessage(String msg, String target) throws JsonProcessingException, InterruptedException {
         MessageConfirmListener.ConfirmResult result = null;
         if (!StringUtils.isEmpty(target)) {
             result = messageService.sendSingleTextMessage(target, msg);
-        }else {
+        } else {
             result = messageService.sendBroadcastTextMessage(msg);
         }
 
-        if (!result.ack){
-            return "消息"+result.correlationData.getId()+"投递失败:"+result.cause;
-        }else {
-            return "消息"+result.correlationData.getId()+"投递成功";
+        if (!result.ack) {
+            return "消息" + result.correlationData.getId() + "投递失败:" + result.cause;
+        } else {
+            return "消息" + result.correlationData.getId() + "投递成功";
         }
     }
 
     @GetMapping("list")
-    public List<MessageDTO> getMessageList(){
+    public List<MessageDTO> getMessageList() {
         return messageService.getMessageList();
     }
 
@@ -64,7 +64,7 @@ public class Api {
     }
 
     @GetMapping("client/list")
-    public List<ClientDTO> getClientList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "100") Integer length){
+    public List<ClientDTO> getClientList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "100") Integer length) {
         return clientService.getClients(page, length);
     }
 
