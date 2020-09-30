@@ -23,7 +23,7 @@ class SocketChannel {
   }
 
   close(){
-    
+    this.socket.destroy()
   }
 }
 

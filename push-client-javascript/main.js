@@ -8,7 +8,7 @@ function handle(msg){
   console.log(msg)
 }
 
-const connector = new Connector('http://192.168.1.100:30001')
+const connector = new Connector('http://192.168.1.12:30001')
 const client = new BioClient('9527', socketFactory)
 
 client.messageHandler = new AutoConfrimMessageHandler(handle, client)
