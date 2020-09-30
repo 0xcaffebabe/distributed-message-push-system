@@ -2,7 +2,6 @@ package wang.ismy.push.client.bio;
 
 import org.junit.Before;
 import org.junit.Test;
-import wang.ismy.push.client.Client;
 import wang.ismy.push.client.message.MessageHandler;
 
 import java.io.ByteArrayInputStream;
@@ -13,7 +12,7 @@ import java.net.Socket;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-public class BioClientThreadAndIoManagerTest {
+public class BioThreadIoManagerTest {
     Socket socket;
     SocketChannel socketChannel;
     byte[] data = "test data\n".getBytes();
@@ -30,12 +29,12 @@ public class BioClientThreadAndIoManagerTest {
 
     @Test
     public void testBuild() throws IOException {
-        BioClientThreadAndIoManager manager = new BioClientThreadAndIoManager(socket, null);
+        BioThreadIoManager manager = new BioThreadIoManager(socket, null);
     }
 
     @Test
     public void send() throws IOException {
-        BioClientThreadAndIoManager manager = new BioClientThreadAndIoManager(socket, null);
+        BioThreadIoManager manager = new BioThreadIoManager(socket, null);
         String msg = "hello world";
 
         manager.send(msg);
@@ -52,7 +51,7 @@ public class BioClientThreadAndIoManagerTest {
         when(client.getUserId()).thenReturn("9527");
         when(client.getMessageHandler()).thenReturn(messageHandler);
 
-        BioClientThreadAndIoManager manager = new BioClientThreadAndIoManager(socket, client);
+        BioThreadIoManager manager = new BioThreadIoManager(socket, client);
         manager.startThread();
 
         Thread.sleep(12000);
@@ -68,7 +67,7 @@ public class BioClientThreadAndIoManagerTest {
         MessageHandler messageHandler = mock(MessageHandler.class);
         when(client.getMessageHandler()).thenReturn(messageHandler);
 
-        BioClientThreadAndIoManager manager = new BioClientThreadAndIoManager(socket, client);
+        BioThreadIoManager manager = new BioThreadIoManager(socket, client);
         manager.startThread();
         Thread.sleep(1000);
 

@@ -87,9 +87,18 @@ public class MessageService {
         if (serverMessage.getMessageType().equals(ServerMessageTypeEnum.BROADCAST_MESSAGE_TYPE)){
             clientService.broadcast(new String(serverMessage.getPayload()));
             log.info("广播消息已发起");
-        }else {
+        }else if(serverMessage.getMessageType().equals(ServerMessageTypeEnum.SINGLE_MESSAGE_TYPE)) {
             clientService.sendMessage(serverMessage.getTo(),new String(serverMessage.getPayload()));
             log.info("已向{}投递消息{}",serverMessage.getTo(),new String(serverMessage.getPayload()));
+        }else if (serverMessage.getMessageType().equals(ServerMessageTypeEnum.KICK_OUT_MESSAGE_TYPE)){
+            Channel channel = clientService.getClient(serverMessage.getTo());
+            if (channel == null) {
+                log.warn("关闭消息 找不到此用户：{}",serverMessage.getTo());
+            }else {
+                clientService.sendMessage(serverMessage.getTo(),"kickout");
+                channel.close();
+                log.info("断开客户 {} channel", serverMessage.getTo());
+            }
         }
         messageSet.add(tag);
     }

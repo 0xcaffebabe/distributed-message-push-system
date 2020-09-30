@@ -10,6 +10,11 @@ async function getClientList(){
     return await axios.get('/api/client/list')
 }
 
+async function kickOut(id) {
+    await axios.delete(`/api/client/${id}`)
+    alert('踢出客户请求已发送')
+}
+
 async function renderConnectorList(){
     const list = await getConnectorList()
 
@@ -34,7 +39,7 @@ async function renderClientList(){
                 <td>${list[i].connector}</td>
                 <td>${list[i].lastActive}</td>
                 <td>
-                    <button class="btn btn-warning btn-sm">踢出</button>
+                    <button class="btn btn-warning btn-sm" onclick="kickOut(${list[i].id})">踢出</button>
                 </td>
             </tr>
     `

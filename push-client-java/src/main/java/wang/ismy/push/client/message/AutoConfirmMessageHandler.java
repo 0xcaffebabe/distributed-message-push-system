@@ -31,7 +31,7 @@ public abstract class AutoConfirmMessageHandler implements MessageHandler {
             this.handle0(clientMessage);
             messageSet.add(clientMessage.getMessageId());
         } catch(Exception e){
-            System.out.println("接收到服务端非结构化消息:"+message);
+            handleUnStructMsg(message);
         }
     }
 
@@ -42,4 +42,17 @@ public abstract class AutoConfirmMessageHandler implements MessageHandler {
      */
     public abstract void handle0(ClientMessage message);
 
+    private void handleUnStructMsg(String msg){
+
+        if (msg.startsWith("kickout")){
+            System.out.println("被踢出客户端了！！！");
+            try {
+                client.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }else {
+            System.out.println("接收到非结构化消息:" + msg);
+        }
+    }
 }

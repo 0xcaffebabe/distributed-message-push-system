@@ -9,15 +9,16 @@ import java.net.Socket;
 
 /**
  * 对连接线程进行管理
+ * @author MY
  */
-public class BioClientThreadAndIoManager {
+public class BioThreadIoManager {
     private Thread heartbeatThread;
     private Thread ioThread;
     private BioClient client;
     private SocketChannel socketChannel;
     private volatile boolean running = true;
     private Logger log = Logger.getInstance();
-    public BioClientThreadAndIoManager(Socket socket, BioClient client) throws IOException {
+    public BioThreadIoManager(Socket socket, BioClient client) throws IOException {
         this.client = client;
         this.socketChannel = new SocketChannel(socket);
         createHeartbeatThread();

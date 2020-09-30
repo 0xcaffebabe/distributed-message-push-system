@@ -20,7 +20,7 @@ public class BioClient extends Client {
     private final String userId;
     private final SocketFactory socketFactory;
     private final ManagerFactory managerFactory;
-    private BioClientThreadAndIoManager manager;
+    private BioThreadIoManager manager;
     private final Logger log = Logger.getInstance();
 
     public BioClient(String userId,SocketFactory socketFactory, ManagerFactory managerFactory) {

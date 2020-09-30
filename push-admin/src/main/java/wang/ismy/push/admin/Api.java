@@ -6,10 +6,7 @@ import org.bouncycastle.pqc.crypto.newhope.NHOtherInfoGenerator;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import wang.ismy.push.admin.entity.ClientDTO;
 import wang.ismy.push.admin.entity.ConnectorDTO;
 import wang.ismy.push.admin.entity.MessageDTO;
@@ -68,4 +65,8 @@ public class Api {
         return clientService.getClients(page, length);
     }
 
+    @DeleteMapping(value = "client/{id}")
+    public void kickOutClient(@PathVariable String id) throws InterruptedException {
+         clientService.kickOut(id);
+    }
 }

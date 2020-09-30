@@ -129,4 +129,14 @@ class ApiTest {
                 .andExpect(status().isOk())
                 .andExpect(content().json(JsonUtils.parse(mockList)));
     }
+
+    @Test
+    public void kickOutClient() throws Exception {
+        ClientService clientService = mock(ClientService.class);
+        mockMvc = MockMvcBuilders.standaloneSetup(new Api(null, null,clientService)).build();
+
+        mockMvc.perform(delete("/api/client/9527"))
+                .andExpect(status().isOk());
+        verify(clientService).kickOut(eq("9527"));
+    }
 }

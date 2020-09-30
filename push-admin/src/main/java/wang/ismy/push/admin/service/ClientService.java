@@ -1,8 +1,12 @@
 package wang.ismy.push.admin.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
+import wang.ismy.push.admin.MessageConfirmListener;
 import wang.ismy.push.admin.entity.ClientDTO;
+import wang.ismy.push.common.entity.ServerMessage;
+import wang.ismy.push.common.enums.ServerMessageTypeEnum;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -17,6 +21,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class ClientService {
     private final RedisService redisService;
+    private final RabbitTemplate rabbitTemplate;
+    private final MessageConfirmListener confirmListener;
 
     public List<ClientDTO> getClients(int page, int length){
         if (page < 1) {
@@ -46,5 +52,18 @@ public class ClientService {
             return LocalDateTime.of(1999,2,17,0,0);
         }
         return LocalDateTime.now().minusSeconds(ttl - 30);
+    }
+
+    public synchronized void kickOut(String clientId) throws InterruptedException {
+        ServerMessage message = generateKickOutMessage(clientId);
+        rabbitTemplate.convertAndSend("message", null, message);
+        confirmListener.await();
+    }
+
+    private ServerMessage generateKickOutMessage(String clientId) {
+        ServerMessage serverMessage = new ServerMessage();
+        serverMessage.setTo(clientId);
+        serverMessage.setMessageType(ServerMessageTypeEnum.KICK_OUT_MESSAGE_TYPE);
+        return serverMessage;
     }
 }

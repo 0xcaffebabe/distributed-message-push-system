@@ -2,7 +2,6 @@ package wang.ismy.push.client.bio;
 
 import org.junit.Test;
 import org.mockito.internal.verification.Times;
-import org.mockito.verification.VerificationMode;
 import wang.ismy.push.client.Client;
 import wang.ismy.push.client.Connector;
 import wang.ismy.push.client.factory.ClientFactory;
@@ -11,9 +10,7 @@ import wang.ismy.push.client.factory.SocketFactory;
 
 import java.io.IOException;
 import java.net.ConnectException;
-import java.net.Socket;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 public class BioClientTest {
 
@@ -36,7 +33,7 @@ public class BioClientTest {
         when(connector.isAvailable()).thenReturn(true);
 
         SocketFactory socketFactory = mock(SocketFactory.class);
-        BioClientThreadAndIoManager manager = mock(BioClientThreadAndIoManager.class);
+        BioThreadIoManager manager = mock(BioThreadIoManager.class);
 
         ManagerFactory managerFactory = mock(ManagerFactory.class);
         when(managerFactory.newBioManager(isNull(),any())).thenReturn(manager);
@@ -60,7 +57,7 @@ public class BioClientTest {
         when(connector.isAvailable()).thenReturn(true);
 
         SocketFactory socketFactory = mock(SocketFactory.class);
-        BioClientThreadAndIoManager manager = mock(BioClientThreadAndIoManager.class);
+        BioThreadIoManager manager = mock(BioThreadIoManager.class);
 
         ManagerFactory managerFactory = mock(ManagerFactory.class);
         when(managerFactory.newBioManager(isNull(),any())).thenReturn(manager);
@@ -85,7 +82,7 @@ public class BioClientTest {
         when(connector.isAvailable()).thenReturn(true);
 
         SocketFactory socketFactory = mock(SocketFactory.class);
-        BioClientThreadAndIoManager manager = mock(BioClientThreadAndIoManager.class);
+        BioThreadIoManager manager = mock(BioThreadIoManager.class);
 
         ManagerFactory managerFactory = mock(ManagerFactory.class);
         when(managerFactory.newBioManager(isNull(),any())).thenReturn(manager);
@@ -105,7 +102,7 @@ public class BioClientTest {
         when(connector.isAvailable()).thenReturn(true);
 
         SocketFactory socketFactory = mock(SocketFactory.class);
-        BioClientThreadAndIoManager manager = mock(BioClientThreadAndIoManager.class);
+        BioThreadIoManager manager = mock(BioThreadIoManager.class);
 
         ManagerFactory managerFactory = mock(ManagerFactory.class);
         when(managerFactory.newBioManager(isNull(),any())).thenReturn(manager);
