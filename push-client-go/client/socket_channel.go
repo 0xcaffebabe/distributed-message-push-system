@@ -18,3 +18,7 @@ func (sc *SocketChannel) ReadLine() (string, error) {
 	line, err := sc.socket.ReadLine()
 	return string(line), err
 }
+
+func (sc *SocketChannel) Close()  {
+	sc.socket.Close()
+}

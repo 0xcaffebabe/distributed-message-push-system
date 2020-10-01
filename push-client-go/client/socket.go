@@ -34,3 +34,7 @@ func (socket *Socket) Write(data []byte) error{
 	_, err := socket.conn.Write(data)
 	return err
 }
+
+func (socket *Socket) Close()  {
+	socket.conn.Close()
+}
