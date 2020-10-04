@@ -17,3 +17,8 @@ spring:
     host: local
 server:
   port: ${sport}
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
