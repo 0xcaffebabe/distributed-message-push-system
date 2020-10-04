@@ -32,6 +32,8 @@ public class ConnectorService {
     @Autowired
     private ConnectorHandler connectorHandler;
 
+    private ServerBootstrap serverBootstrap;
+
     @PostConstruct
     public void init(){
         new Thread(()->{
@@ -50,8 +52,8 @@ public class ConnectorService {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             // 复制启动服务器
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup)
+            serverBootstrap = new ServerBootstrap();
+            serverBootstrap.group(bossGroup, workerGroup)
                     // 使用 NioServerSocketChannel 将到来的连接实例化为Channel
                     .channel(NioServerSocketChannel.class)
                     // 指定处理器来处理 channel 与 channel 的事件
@@ -67,7 +69,7 @@ public class ConnectorService {
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             // Bind and start to accept incoming connections.
-            ChannelFuture f = b.bind(port).sync();
+            ChannelFuture f = serverBootstrap.bind(port).sync();
             log.info("监听{}端口",port);
             // Wait until the server socket is closed.
             // In this example, this does not happen, but you can do that to gracefully

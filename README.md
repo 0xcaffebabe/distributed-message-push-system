@@ -77,6 +77,15 @@ gateway:
 - gateway 调度日志
 - connector 实例详细监控
 
+可视化监控：
+
+- 数据
+    - 消息到达率
+    - gateway 请求成功比
+    - connector 负载
+        - 硬件资源
+        - 在线用户 
+
 运维：
 
 - connector扩容缩容
