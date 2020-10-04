@@ -59,4 +59,4 @@ jobs:
         with:
           java-version: 14
       - name: Build with Gradle
-        run: gradle :push-client-java:build
+        run: cd ./push-clients/push-client-java/ && gradle build
