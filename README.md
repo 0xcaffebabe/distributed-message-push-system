@@ -75,6 +75,7 @@ lookup:
 监控：
 
 - lookup调度日志
+- connector 实例详细监控
 
 运维：
 
