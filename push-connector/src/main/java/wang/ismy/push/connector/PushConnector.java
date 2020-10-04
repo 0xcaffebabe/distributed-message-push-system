@@ -11,10 +11,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableScheduling
-public class PushConnectorApplication {
+public class PushConnector {
 
     public static void main(String[] args) {
-        SpringApplication.run(PushConnectorApplication.class, args);
+        SpringApplication.run(PushConnector.class, args);
     }
 
 }

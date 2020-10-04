@@ -49,7 +49,7 @@ jobs:
         with:
           java-version: 14
       - name: Build with Gradle
-        run: gradle :push-lookup:build
+        run: gradle :push-gateway:build
   push-client-java-build:
     runs-on: ubuntu-latest
     steps:

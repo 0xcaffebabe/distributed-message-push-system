@@ -1,5 +1,5 @@
 connector:
-  port: ${cport}
+  port: ${connector-port:0}
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -10,13 +10,13 @@ spring:
     nacos:
       discovery:
         server-addr: local:8848
-        ip: ${sip:127.0.0.1}
+        ip: ${expose-ip:127.0.0.1}
   application:
     name: connector-service
   redis:
     host: local
 server:
-  port: ${sport}
+  port: ${web-port:0}
 management:
   endpoints:
     web:

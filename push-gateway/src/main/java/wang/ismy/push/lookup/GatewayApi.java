@@ -16,12 +16,12 @@ import java.util.Random;
  * @date 2020/6/17 21:05
  */
 @RestController
-public class LookupApi {
+public class GatewayApi {
 
     private LoadBalancerClient loadBalancerClient;
     private RestTemplate restTemplate;
 
-    public LookupApi(LoadBalancerClient loadBalancerClient, RestTemplate restTemplate) {
+    public GatewayApi(LoadBalancerClient loadBalancerClient, RestTemplate restTemplate) {
         this.loadBalancerClient = loadBalancerClient;
         this.restTemplate = restTemplate;
     }

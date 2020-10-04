@@ -11,10 +11,10 @@ import org.springframework.web.client.RestTemplate;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-public class PushLookupApplication {
+public class PushGateway {
 
     public static void main(String[] args) {
-        SpringApplication.run(PushLookupApplication.class, args);
+        SpringApplication.run(PushGateway.class, args);
     }
 
     @Bean
