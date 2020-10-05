@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>仪表盘</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <style>
+        .messageId {
+            max-width: 200px;
+            overflow:hidden;
+            text-overflow:ellipsis;
+            white-space:nowrap;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header container">
+        <h1>分布式消息推送系统 <small>dashboard</small></h1>
+    </div>
+    <div id="container" class="container">
+        <ul class="nav nav-tabs nav-pills">
+            <li role="presentation" class="active"><a href="#">仪表盘</a></li>
+            <li role="presentation"><a href="./list.html">消息列表</a></li>
+            <li role="presentation"><a href="./monitor.html">监控</a></li>
+            <li role="presentation"><a href="#">运维</a></li>
+        </ul>
+        <div id="main" style="width: 600px;height:400px;"></div>
+    </div>
+</body>
+<script src="https://cdn.bootcdn.net/ajax/libs/axios/0.1.0/axios.min.js"></script>
+<script crossorigin="anonymous" integrity="sha384-et+fqdf7kslHL5Ip8rXSJPUPODLa7eMfpFTBaCfnlMzrcAz/wxI5Xm/mNTZwd+7H" src="https://lib.baomitu.com/echarts/4.7.0/echarts.min.js"></script>
+<script>
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    myChart.setOption({
+        series : [
+            {
+                name: 'Gateway 请求',
+                type: 'pie',
+                radius: '55%',
+                data:[
+                    {value:235, name:'视频广告'},
+                    {value:274, name:'联盟广告'},
+                    {value:310, name:'邮件营销'},
+                    {value:335, name:'直接访问'},
+                    {value:400, name:'搜索引擎'}
+                ]
+            }
+        ]
+    })
+</script>
+</html>
