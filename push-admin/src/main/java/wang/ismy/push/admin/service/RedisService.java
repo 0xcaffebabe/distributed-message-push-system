@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -30,5 +31,13 @@ public class RedisService {
             return -1;
         }
         return expire.intValue();
+    }
+
+    public String hashGet(String key, String field){
+        Object o = redisTemplate.opsForHash().get(key, field);
+        if (o == null) {
+            return "";
+        }
+        return o.toString();
     }
 }
