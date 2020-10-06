@@ -1,4 +1,4 @@
-package wang.ismy.push.lookup;
+package wang.ismy.push.lookup.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
