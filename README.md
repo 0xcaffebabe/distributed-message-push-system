@@ -34,7 +34,7 @@ v0.2（未来）:
 - java
 - python
 - node
-- go(待办)
+- go
 
 ## 技术栈
 
@@ -69,19 +69,17 @@ connector：
 gateway:
 
 - connector负载均衡
+- gateway 请求成功比可视化展示
+- gateway 调度日志
 
 ## 待办
 
 监控：
 
-- gateway 调度日志
 - connector 实例详细监控
-
-可视化监控：
 
 - 数据
     - 消息到达率
-    - gateway 请求成功比
     - connector 负载
         - 硬件资源
         - 在线用户 
