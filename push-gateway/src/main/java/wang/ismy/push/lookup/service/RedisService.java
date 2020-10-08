@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author MY
  * @date 2020/10/5 21:02
@@ -15,5 +17,16 @@ public class RedisService {
 
     public void hashIncr(String key,String field){
         redisTemplate.opsForHash().increment(key, field, 1);
+    }
+
+    public void setToken(String userId, String token){
+        redisTemplate.multi();
+        redisTemplate.opsForValue().set("gateway-token-" + userId, token,30, TimeUnit.SECONDS);
+        redisTemplate.opsForValue().set("gateway-userid-" + token, userId,30, TimeUnit.SECONDS);
+        redisTemplate.exec();
+    }
+
+    public void setEncryptKey(String userId, String encryptKey){
+        redisTemplate.opsForValue().set("encrypt-" + userId, encryptKey,30, TimeUnit.SECONDS);
     }
 }

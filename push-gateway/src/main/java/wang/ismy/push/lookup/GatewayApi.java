@@ -1,12 +1,19 @@
 package wang.ismy.push.lookup;
 
+import io.netty.util.internal.StringUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.connector.Connector;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import wang.ismy.push.lookup.entity.AuthRequest;
+import wang.ismy.push.lookup.entity.AuthResponse;
+import wang.ismy.push.lookup.entity.ConnectorDTO;
+import wang.ismy.push.lookup.service.GatewayService;
 import wang.ismy.push.lookup.service.RedisService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,10 +26,10 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @AllArgsConstructor
 public class GatewayApi {
-
     private LoadBalancerClient loadBalancerClient;
     private RestTemplate restTemplate;
     private RedisService redisService;
+    private GatewayService gatewayService;
 
     @GetMapping
     public String getConnector(HttpServletRequest request) {
@@ -52,5 +59,27 @@ public class GatewayApi {
         return "";
     }
 
+    @GetMapping("connector")
+    public ConnectorDTO getConnector(String token){
+        return gatewayService.getConnector(token);
+    }
 
+    @GetMapping("auth")
+    public AuthResponse auth(AuthRequest request){
+        AuthResponse failResponse = new AuthResponse();
+        failResponse.setSuccess(false);
+        if (StringUtils.isEmpty(request.getUserId())){
+            failResponse.setMessage("userid 不得为空");
+            return failResponse;
+        }
+        if (StringUtils.isEmpty(request.getPassword())){
+            failResponse.setMessage("密码不得为空");
+            return failResponse;
+        }
+        if (StringUtils.isEmpty(request.getEncryptKey())){
+            failResponse.setMessage("秘钥不得为空");
+            return failResponse;
+        }
+        return gatewayService.auth(request);
+    }
 }
