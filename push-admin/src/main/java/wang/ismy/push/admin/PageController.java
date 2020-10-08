@@ -12,6 +12,6 @@ public class PageController {
 
     @RequestMapping("/")
     public String homePage() {
-        return "forward:/list.html";
+        return "forward:/dashboard.html";
     }
 }

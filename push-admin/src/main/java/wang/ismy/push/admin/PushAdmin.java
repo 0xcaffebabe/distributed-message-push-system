@@ -3,6 +3,7 @@ package wang.ismy.push.admin;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * @author MY
@@ -18,4 +19,7 @@ public class PushAdmin {
     public MessageConfirmListener messageConfirmListener() {
         return new MessageConfirmListener();
     }
+
+    @Bean
+    public RestTemplate restTemplate(){return new RestTemplate();}
 }

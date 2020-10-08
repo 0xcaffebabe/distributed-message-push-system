@@ -13,7 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import oshi.SystemInfo;
+import oshi.hardware.HardwareAbstractionLayer;
+import oshi.software.os.OperatingSystem;
 import wang.ismy.push.connector.ConnectorHandler;
+import wang.ismy.push.connector.entity.ResourceInfo;
 
 import javax.annotation.PostConstruct;
 
@@ -33,6 +37,8 @@ public class ConnectorService {
     private ConnectorHandler connectorHandler;
 
     private ServerBootstrap serverBootstrap;
+
+    private SystemInfo systemInfo = new SystemInfo();
 
     @PostConstruct
     public void init(){
@@ -79,5 +85,17 @@ public class ConnectorService {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
         }
+    }
+
+    public ResourceInfo getResourceInfo(){
+        ResourceInfo info = new ResourceInfo();
+        OperatingSystem os = systemInfo.getOperatingSystem();
+        info.setOs(os.toString());
+        HardwareAbstractionLayer hw = systemInfo.getHardware();
+
+        info.setTotalMemory(hw.getMemory().getTotal());
+        info.setMemoryAvailable(hw.getMemory().getAvailable());
+
+        return info;
     }
 }

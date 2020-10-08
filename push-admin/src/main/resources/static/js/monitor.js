@@ -22,6 +22,7 @@ async function renderConnectorList(){
         connectorTable.innerHTML += `
             <tr class="success">
                 <td>${list[i].name}</td>
+                <td>${list[i].users}</td>
                 <td>${list[i].delay}ms</td>
                 <td>${list[i].state}</td>
             </tr>

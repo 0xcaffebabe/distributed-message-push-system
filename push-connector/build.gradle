@@ -32,6 +32,7 @@ dependencies {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 	implementation 'org.mockito:mockito-core:3.5.10'
+	compile group: 'com.github.oshi', name: 'oshi-core', version: '5.2.5'
 }
 
 test {

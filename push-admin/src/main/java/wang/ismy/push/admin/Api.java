@@ -9,10 +9,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import wang.ismy.push.admin.entity.ClientDTO;
 import wang.ismy.push.admin.entity.ConnectorDTO;
+import wang.ismy.push.admin.entity.GatewayStat;
 import wang.ismy.push.admin.entity.MessageDTO;
 import wang.ismy.push.admin.service.ClientService;
 import wang.ismy.push.admin.service.ConnectorService;
 import wang.ismy.push.admin.service.MessageService;
+import wang.ismy.push.admin.service.RedisService;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -33,6 +35,8 @@ public class Api {
     private final ConnectorService connectorService;
 
     private final ClientService clientService;
+
+    private final RedisService redisService;
 
     @RequestMapping(value = "message", produces = "application/json;charset=utf8")
     public String sendMessage(String msg, String target) throws JsonProcessingException, InterruptedException {
@@ -68,5 +72,22 @@ public class Api {
     @DeleteMapping(value = "client/{id}")
     public void kickOutClient(@PathVariable String id) throws InterruptedException {
          clientService.kickOut(id);
+    }
+
+    @GetMapping("stat/gateway/requests")
+    public GatewayStat getGatewayStat(){
+        GatewayStat stat = new GatewayStat();
+        String success = redisService.hashGet("gateway-stat", "success");
+        if (StringUtils.isEmpty(success)){
+            success = "0";
+        }
+        stat.setSuccess(Long.valueOf(success));
+        String fail = redisService.hashGet("gateway-stat", "fail");
+        if (StringUtils.isEmpty(fail)){
+            fail = "0";
+        }
+        stat.setFail(Long.valueOf(fail));
+
+        return stat;
     }
 }

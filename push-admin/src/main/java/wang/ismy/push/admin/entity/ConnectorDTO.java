@@ -11,5 +11,6 @@ public class ConnectorDTO {
     private String name;
     private Boolean reachable;
     private String state;
+    private Long users;
     private Integer delay;
 }

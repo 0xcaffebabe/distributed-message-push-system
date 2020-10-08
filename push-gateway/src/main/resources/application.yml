@@ -4,5 +4,7 @@ spring:
     nacos:
       discovery:
         server-addr: local:8848
+  redis:
+    host: local
 server:
   port: 30001

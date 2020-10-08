@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.web.client.RestTemplate;
 import wang.ismy.push.admin.entity.ConnectorDTO;
 
 import java.io.IOException;
@@ -19,7 +20,9 @@ public class ConnectorServiceTest {
     @Test
     public void getConnectorListSuccess() throws IOException {
         DiscoveryClient discoveryClient = mock(DiscoveryClient.class);
-        ConnectorService connectorService = new ConnectorService(discoveryClient);
+        RestTemplate restTemplate = mock(RestTemplate.class);
+        when(restTemplate.getForObject(anyString(),eq(Long.class))).thenReturn(100L);
+        ConnectorService connectorService = new ConnectorService(discoveryClient, restTemplate);
 
         List<ServiceInstance> instances = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -35,12 +38,15 @@ public class ConnectorServiceTest {
         assertEquals(10, list.size());
         assertEquals("健康",list.get(0).getState());
         assertTrue(list.get(0).getReachable());
+        assertEquals(100L, (long) list.get(0).getUsers());
     }
 
     @Test
     public void getConnectorListSomeCantReach() throws IOException {
         DiscoveryClient discoveryClient = mock(DiscoveryClient.class);
-        ConnectorService connectorService = new ConnectorService(discoveryClient);
+        RestTemplate restTemplate = mock(RestTemplate.class);
+        when(restTemplate.getForObject(anyString(),eq(Long.class))).thenReturn(100L);
+        ConnectorService connectorService = new ConnectorService(discoveryClient, restTemplate);
 
         List<ServiceInstance> instances = new ArrayList<>();
         for (int i = 0; i < 9; i++) {
@@ -56,6 +62,7 @@ public class ConnectorServiceTest {
         List<ConnectorDTO> list = connectorService.getConnectorList();
         assertEquals(10, list.size());
         assertEquals("健康",list.get(0).getState());
+        assertEquals(100L, (long) list.get(0).getUsers());
         assertTrue(list.get(0).getReachable());
 
         assertFalse(list.stream().filter(c -> !c.getReachable()).collect(Collectors.toList()).get(0).getReachable());

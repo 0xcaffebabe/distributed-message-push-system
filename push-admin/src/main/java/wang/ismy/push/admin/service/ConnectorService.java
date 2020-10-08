@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 import wang.ismy.push.admin.entity.ConnectorDTO;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.List;
 public class ConnectorService {
 
     private final DiscoveryClient discoveryClient;
+    private final RestTemplate restTemplate;
 
     public List<ConnectorDTO> getConnectorList() throws IOException {
         List<ServiceInstance> instances = discoveryClient.getInstances("connector-service");
@@ -35,6 +37,7 @@ public class ConnectorService {
         InetAddress inetAddress = InetAddress.getByName(instance.getHost());
         ConnectorDTO connector = new ConnectorDTO();
         connector.setName(instance.getServiceId()+":" + instance.getPort());
+        connector.setUsers(restTemplate.getForObject(instance.getUri()+"/users",Long.class));
         long time = System.currentTimeMillis();
         testReachableAndFillData(inetAddress, connector, time);
         return connector;
