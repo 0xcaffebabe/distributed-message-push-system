@@ -28,7 +28,7 @@ public class RedisService {
     }
 
     public String getUserIdBy(String token){
-        return redisTemplate.opsForValue().get(token);
+        return redisTemplate.opsForValue().get("gateway-userid-" + token);
     }
 
     public void setEncryptKey(String userId, String encryptKey){

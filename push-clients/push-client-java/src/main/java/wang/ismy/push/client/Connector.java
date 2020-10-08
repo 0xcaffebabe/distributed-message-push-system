@@ -1,5 +1,7 @@
 package wang.ismy.push.client;
 
+import wang.ismy.push.client.auth.AuthManager;
+
 import java.io.IOException;
 
 /**
@@ -9,18 +11,20 @@ import java.io.IOException;
  */
 public class Connector {
 
-    private String lookupAddress;
+    private String gateway;
+    private AuthManager authManager;
     private String host;
     private int port;
     private HttpTemplate httpTemplate = new HttpTemplate();
 
-    public Connector(String lookupAddress, HttpTemplate httpTemplate) {
-        this(lookupAddress);
+    public Connector(String gateway,AuthManager authManager, HttpTemplate httpTemplate) {
+        this(gateway, authManager);
         this.httpTemplate = httpTemplate;
     }
 
-    public Connector(String lookupAddress) {
-        this.lookupAddress = lookupAddress;
+    public Connector(String gateway, AuthManager authManager) {
+        this.gateway = gateway;
+        this.authManager = authManager;
     }
 
     /**
@@ -30,14 +34,13 @@ public class Connector {
      * @throws InterruptedException
      */
     public boolean lookupConnector() throws IOException, InterruptedException {
-        String response = httpTemplate.get(lookupAddress);
-        String[] splitResult = response.split(":");
-        if (splitResult.length != 2) {
+        ConnectorDTO connectorDTO = httpTemplate.get(gateway + "/connector?token=" + authManager.getToken(), ConnectorDTO.class);
+        if (connectorDTO.equals(ConnectorDTO.emptyConnector())) {
             return false;
         }
 
-        host = splitResult[0];
-        port = Integer.parseInt(splitResult[1]);
+        host = connectorDTO.getHost();
+        port = connectorDTO.getPort();
         return true;
     }
 

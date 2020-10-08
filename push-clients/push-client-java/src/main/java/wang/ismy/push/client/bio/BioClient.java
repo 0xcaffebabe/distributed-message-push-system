@@ -33,7 +33,9 @@ public class BioClient extends Client {
     public void connect(Connector connector) throws Exception{
         if (!connector.isAvailable()) {
             try {
-                connector.lookupConnector();
+                if (!connector.lookupConnector()){
+                    throw new IOException("无法获取 connector");
+                }
             } catch (Exception e){
                 log.info("获取connector发生异常:"+e);
                 throw new IOException(e);

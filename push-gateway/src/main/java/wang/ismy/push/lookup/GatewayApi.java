@@ -7,10 +7,7 @@ import org.apache.catalina.connector.Connector;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import wang.ismy.push.lookup.entity.AuthRequest;
 import wang.ismy.push.lookup.entity.AuthResponse;
@@ -32,7 +29,7 @@ public class GatewayApi {
     private final GatewayService gatewayService;
 
     @GetMapping("connector")
-    public ConnectorDTO getConnector(String token){
+    public ConnectorDTO getConnector(@RequestParam String token){
         return gatewayService.getConnector(token);
     }
 

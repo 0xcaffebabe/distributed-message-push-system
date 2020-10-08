@@ -7,9 +7,4 @@ import static org.junit.Assert.*;
 
 public class ConnectorFactoryTest {
 
-    @Test
-    public void newConnector() {
-        Connector connector = ConnectorFactory.newConnector("http://test.url");
-        assertNotNull(connector);
-    }
 }
