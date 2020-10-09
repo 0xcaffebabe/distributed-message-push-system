@@ -20,6 +20,6 @@ public class PageControllerTest {
 
         )
                 .andExpect(status().isOk())
-                .andExpect(forwardedUrl("/list.html"));
+                .andExpect(forwardedUrl("/dashboard.html"));
     }
 }
