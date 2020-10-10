@@ -18,11 +18,11 @@ const int MAX_CONNECT = 20;
 
 int main(int argc , char ** argv)
 {
-	WrappedSocket ws = newSocket("127.0.0.1", 1999);
+	WrappedSocket ws = newSocket("www.baidu.com", 80);
 	
 	connectServer(ws);
 
-  writeAndFlush(ws, "hello world");
+  writeAndFlush(ws, "GET / HTTP/1.1\r\nHost: www.baidu.com\r\nConnection: close\r\n\r\n");
   char * buf;
 	while(1)	
 	{

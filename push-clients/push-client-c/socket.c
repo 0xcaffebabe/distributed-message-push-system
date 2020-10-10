@@ -4,6 +4,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdio.h>
+#include "./dns.c"
 
 typedef struct{
   char* host;
@@ -36,6 +37,12 @@ ssize_t readline(int fd, char *vptr, size_t maxlen)
 
 WrappedSocket newSocket(char* host, int port){
   WrappedSocket ws;
+	char ip[16];
+	dns_resolve(host, ip);
+	if (NULL == ip) {
+		printf("解析主机名失败 %s\n", host);
+		exit(1);
+	}
   ws.sockfd = socket(AF_INET , SOCK_STREAM , 0);
   if (ws.sockfd == -1) {
     perror("socket error");
@@ -44,9 +51,9 @@ WrappedSocket newSocket(char* host, int port){
   bzero(&ws.servaddr , sizeof(ws.servaddr));
 	ws.servaddr.sin_family = AF_INET;
 	ws.servaddr.sin_port = htons(port);
-  if(inet_pton(AF_INET , host , &ws.servaddr.sin_addr) < 0)
+  if(inet_pton(AF_INET , ip , &ws.servaddr.sin_addr) < 0)
 	{
-		printf("inet_pton error for %s\n", host);
+		printf("inet_pton error for %s\n", ip);
 		exit(1);
 	}
   return ws;
