@@ -19,4 +19,8 @@ public class AESUtils {
         return new String(Base64.getEncoder().encode(keyGenerator.generateKey().getEncoded()));
     }
 
+    public static byte[] decodeKey(String base64EncodedStr){
+        return Base64.getDecoder().decode(base64EncodedStr);
+    }
+
 }
