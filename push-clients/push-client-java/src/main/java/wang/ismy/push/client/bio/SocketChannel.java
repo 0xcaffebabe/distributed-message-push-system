@@ -23,7 +23,7 @@ public class SocketChannel {
     }
 
     public void writeAndFlush(String data){
-        printWriter.write(data);
+        printWriter.println(data);
         printWriter.flush();
     }
 
