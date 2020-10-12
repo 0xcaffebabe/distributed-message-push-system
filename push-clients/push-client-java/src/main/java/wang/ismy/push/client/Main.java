@@ -7,6 +7,7 @@ import wang.ismy.push.client.factory.ConnectorFactory;
 import wang.ismy.push.client.message.AutoConfirmMessageHandler;
 import wang.ismy.push.client.message.ClientMessage;
 
+import java.util.Base64;
 import java.util.Random;
 import java.util.UUID;
 
@@ -23,8 +24,8 @@ public class Main {
         AuthRequest request = new AuthRequest();
         request.setUserId("9527");
         request.setPassword("123");
-        request.setEncryptKey(AESUtils.generateKey("123").getFormat());
-
+        request.setEncryptKey("kiss");
+        
         AuthManager authManager = new AuthManager(gateway,request,new HttpTemplate());
         authManager.auth();
 

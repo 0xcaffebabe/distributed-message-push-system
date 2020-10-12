@@ -25,9 +25,13 @@ public class AESUtils {
             keyGenerator.init(128, secureRandom);
             return keyGenerator.generateKey();
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return null;
+    }
+
+    public static String generateKeyBase64(String seed){
+        Key key = generateKey(seed);
+        return Base64.getEncoder().encodeToString(key.getEncoded());
     }
 
     public static byte[] encrypt(byte[] data, String key) {
@@ -51,15 +55,5 @@ public class AESUtils {
             throw new RuntimeException(e);
         }
 
-    }
-
-    public static void main(String[] args) {
-        byte[] data = "i am ".getBytes();
-        System.out.println(Arrays.toString(data));
-        String key = "dkljklviodcsd,j";
-        byte[] encrypt = encrypt(data, key);
-        System.out.println(Arrays.toString(encrypt));
-        byte[] out = decrypt(encrypt, key);
-        System.out.println(new String(out));
     }
 }
