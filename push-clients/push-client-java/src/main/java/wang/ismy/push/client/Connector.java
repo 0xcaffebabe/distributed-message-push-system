@@ -55,4 +55,12 @@ public class Connector {
     public int getPort() {
         return port;
     }
+
+    public String getSecretKey(){
+        return authManager.getAuthRequest().getEncryptKey();
+    }
+
+    public String getToken(){
+        return authManager.getToken();
+    }
 }

@@ -24,4 +24,8 @@ public class RedisService {
     public void set(String key,String value){
         redisTemplate.opsForValue().set("connector-"+port+"-"+key,value,30L, TimeUnit.SECONDS);
     }
+
+    public String get(String key){
+        return redisTemplate.opsForValue().get(key);
+    }
 }

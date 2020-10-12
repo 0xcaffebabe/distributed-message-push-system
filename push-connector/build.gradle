@@ -24,6 +24,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.20'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	compile group: 'com.google.guava', name: 'guava', version: '29.0-jre'
 	annotationProcessor 'org.projectlombok:lombok:1.18.12'
 	compileOnly 'org.projectlombok:lombok:1.18.12'
 	compile group: 'com.alibaba.cloud', name: 'spring-cloud-starter-alibaba-nacos-discovery', version: '2.2.1.RELEASE'

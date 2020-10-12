@@ -1,5 +1,6 @@
 package wang.ismy.push.client.bio;
 
+import wang.ismy.push.client.AESUtils;
 import wang.ismy.push.client.Client;
 import wang.ismy.push.client.Connector;
 import wang.ismy.push.client.Logger;
@@ -9,6 +10,7 @@ import wang.ismy.push.client.message.MessageHandler;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Base64;
 
 /**
  * @author MY
@@ -23,32 +25,34 @@ public class BioClient extends Client {
     private BioThreadIoManager manager;
     private final Logger log = Logger.getInstance();
 
-    public BioClient(String userId,SocketFactory socketFactory, ManagerFactory managerFactory) {
+    public BioClient(String userId, SocketFactory socketFactory, ManagerFactory managerFactory) {
         this.userId = userId;
         this.socketFactory = socketFactory;
         this.managerFactory = managerFactory;
     }
 
     @Override
-    public void connect(Connector connector) throws Exception{
+    public void connect(Connector connector) throws Exception {
         if (!connector.isAvailable()) {
             try {
-                if (!connector.lookupConnector()){
+                if (!connector.lookupConnector()) {
                     throw new IOException("无法获取 connector");
                 }
-            } catch (Exception e){
-                log.info("获取connector发生异常:"+e);
+            } catch (Exception e) {
+                log.info("获取connector发生异常:" + e);
                 throw new IOException(e);
             }
         }
         this.connector = connector;
         Socket socket = socketFactory.newSocket(connector.getHost(), connector.getPort());
         manager = managerFactory.newBioManager(socket, this);
+        String base64 = Base64.getEncoder().encodeToString(AESUtils.encrypt(connector.getToken().getBytes(), this.connector.getSecretKey()));
+        manager.getSocketChannel().writeAndFlush("auth-" + userId + "-" + base64);
         manager.startThread();
     }
 
     public void reconnect() throws Exception {
-        if (connector == null){
+        if (connector == null) {
             throw new IllegalStateException("connector is null!!");
         }
         // 重新连接之前必须重新获取connector
@@ -57,11 +61,15 @@ public class BioClient extends Client {
     }
 
     @Override
-    public void send(String message){
+    public void send(String message) {
         if (manager == null) {
-            throw new IllegalStateException("connector is null");
+            throw new IllegalStateException("manager is null");
         }
-        manager.send(message);
+        // 加密
+        String secretKey = connector.getSecretKey();
+        byte[] encrypt = AESUtils.encrypt(message.getBytes(), secretKey);
+        String encoded = Base64.getEncoder().encodeToString(encrypt);
+        manager.send(encoded);
     }
 
     @Override

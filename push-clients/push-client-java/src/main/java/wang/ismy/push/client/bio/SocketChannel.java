@@ -1,5 +1,7 @@
 package wang.ismy.push.client.bio;
 
+import wang.ismy.push.client.AESUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,6 +26,7 @@ public class SocketChannel {
 
     public void writeAndFlush(String data){
         printWriter.println(data);
+        System.out.println("print:" + data);
         printWriter.flush();
     }
 

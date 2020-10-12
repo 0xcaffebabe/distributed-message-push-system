@@ -9,16 +9,19 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.LineBasedFrameDecoder;
+import io.netty.handler.codec.base64.Base64Decoder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.software.os.OperatingSystem;
-import wang.ismy.push.connector.ConnectorHandler;
+import wang.ismy.push.connector.handler.AuthHandler;
+import wang.ismy.push.connector.handler.Base64Handler;
+import wang.ismy.push.connector.handler.ConnectorHandler;
 import wang.ismy.push.connector.entity.ResourceInfo;
+import wang.ismy.push.connector.handler.DecryptHandler;
 
 import javax.annotation.PostConstruct;
 
@@ -36,6 +39,12 @@ public class ConnectorService {
 
     @Autowired
     private ConnectorHandler connectorHandler;
+
+    @Autowired
+    private DecryptHandler decryptHandler;
+
+    @Autowired
+    private AuthHandler authHandler;
 
     private ServerBootstrap serverBootstrap;
 
@@ -69,6 +78,9 @@ public class ConnectorService {
                         public void initChannel(SocketChannel ch) throws Exception {
                             ch.pipeline()
                                     .addLast(new LineBasedFrameDecoder(4096))
+                                    .addLast(authHandler)
+                                    .addLast(new Base64Handler())
+                                    .addLast(decryptHandler)
                                     .addLast(connectorHandler);
                         }
                     })
