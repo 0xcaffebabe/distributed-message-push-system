@@ -86,5 +86,10 @@ public class BioClient extends Client {
     public MessageHandler getMessageHandler() {
         return messageHandler;
     }
+
+    public String decrypt(String base64EncodeEncrypt){
+        byte[] encrypted = Base64.getDecoder().decode(base64EncodeEncrypt);
+        return new String(AESUtils.decrypt(encrypted, connector.getSecretKey()));
+    }
 }
 

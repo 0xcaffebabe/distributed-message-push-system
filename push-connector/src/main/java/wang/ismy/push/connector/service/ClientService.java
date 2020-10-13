@@ -3,10 +3,13 @@ package wang.ismy.push.connector.service;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import wang.ismy.push.common.AESUtils;
 
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -91,6 +94,12 @@ public class ClientService {
     }
 
     public void sendMessage(String userId,String message){
+        String key = redisService.get("encrypt-"+userId);
+        if (StringUtils.isEmpty(key)){
+            log.warn("客户 {} 无法获取到密钥", userId);
+            return;
+        }
+        message = Base64.getEncoder().encodeToString(AESUtils.encrypt(message.getBytes(), key));
         message = message+"\n";
         Channel channel = channelMap.get(userId);
         if (channel == null){
@@ -105,12 +114,23 @@ public class ClientService {
         channel.flush();
     }
 
-    public void broadcast(String message){
+    public void broadcast(String msg){
         Collection<Channel> channels = channelMap.values();
         for (Channel channel : channels) {
-            String finalMessage = message+"\n";
             threadPoolService.submit(()->{
-                channel.write(Unpooled.wrappedBuffer(finalMessage.getBytes()));
+                String userId = getClient(channel);
+                if (StringUtils.isEmpty(userId)){
+                    log.warn("连接 {} 不在系统之内", channel);
+                    return;
+                }
+                String key = redisService.get("encrypt-"+userId);
+                if (StringUtils.isEmpty(key)){
+                    log.warn("客户 {} 无法获取到密钥", userId);
+                    return;
+                }
+                String message = Base64.getEncoder().encodeToString(AESUtils.encrypt(msg.getBytes(), key));
+                message = message+"\n";
+                channel.write(Unpooled.wrappedBuffer(message.getBytes()));
                 channel.flush();
                 log.info("向{}广播消息:{}",channel,message);
             });

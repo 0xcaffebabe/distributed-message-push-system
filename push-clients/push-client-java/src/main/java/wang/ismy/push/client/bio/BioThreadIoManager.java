@@ -76,6 +76,10 @@ public class BioThreadIoManager {
             while (running){
                 try {
                     String s = socketChannel.readLine();
+                    log.info(s);
+                    if (authed){
+                        s = client.decrypt(s);
+                    }
                     if ("auth-success".equals(s)){
                         log.info("通过认证 可以向服务端发送消息了");
                         authed = true;
